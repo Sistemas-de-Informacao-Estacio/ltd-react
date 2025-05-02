@@ -56,10 +56,9 @@ function Nav() {
                 </button>
 
                 <ul className={`
-                    transition-all duration-300 overflow-hidden
-                    ${menu ? 'max-h-[500px] mt-4' : 'max-h-0 md:max-h-full'}
-                    flex-col md:flex md:flex-row md:items-center md:gap-6
-                    text-lg text-white cursor-pointer
+                      flex flex-col md:flex-row md:items-center md:gap-6
+                      text-lg mt-4 md:mt-2 transition-all duration-300
+                      ${menu ? 'block' : 'hidden'} md:flex
                 `}>
                     {['Home', 'Sobre', 'Quem Somos', 'Apps', 'CyberSec', 'Tecnologias', 'Contato'].map((page) => (
                         <li key={page} onClick={() => handleChange(page)} className="group relative px-4 py-2 cursor-pointer transition-all duration-300 hover:text-green-400 hover:bg-white/20  hover:rounded-lg group-hover:translate-x-1">
@@ -77,7 +76,7 @@ function Nav() {
 
                 </ul>
                 <div>
-                
+
                 </div>
 
             </nav>
