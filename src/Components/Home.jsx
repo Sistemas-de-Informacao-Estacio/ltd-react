@@ -22,7 +22,7 @@ function Home() {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent mb-6 animate-pulse leading-tight">
           Laboratório de Tecnologia e Desenvolvimento
         </h1>
-        <p className="max-w-xl text-center mx-auto">
+        <p className=" text-2xl font-serif max-w-xl text-center mx-auto">
           Uma parceria entre a Estácio e as Prefeituras de São José e Florianópolis para inovação tecnológica no setor público
         </p>
 
