@@ -17,6 +17,7 @@ function Home() {
  
   return (
     <div className="h-screen  pt-24 bg-gray-900 text-white overflow-hidden">
+      
       <section className="text-center p-8">
 
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent mb-6 animate-pulse leading-tight">

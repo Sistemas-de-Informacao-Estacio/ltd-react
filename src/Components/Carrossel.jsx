@@ -14,12 +14,12 @@ function Carrossel() {
 
     const prevRef = useRef(null);
     const nextRef = useRef(null);
-    
+
     return (
         <div className="w-96 h-96 max-w-3xl mx-auto">
 
             <Swiper
-            
+
                 modules={[Navigation, Autoplay, EffectFade, Pagination]}
                 autoplay={{ delay: 3000, disableOnInteraction: false }}
                 loop
@@ -28,10 +28,11 @@ function Carrossel() {
                 spaceBetween={20}
                 slidesPerView={1}
                 pagination={{ clickable: true }}
-                navigation ={{
-                    prevEl: prevRef.current,
-                    nextEl: nextRef.current, 
+                onBeforeInit={(swiper) => {
+                    swiper.params.navigation.prevEl = prevRef.current;
+                    swiper.params.navigation.nextEl = nextRef.current;
                 }}
+                navigation
                 className="rounded-2xl shadow-lg">
 
                 {img.map((item) => (
