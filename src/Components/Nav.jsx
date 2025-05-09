@@ -66,8 +66,8 @@ function Nav() {
 
                                 {page}
 
-                                <span className="absolute left-0 bottom-0 w-full h-0.5 bg-green-400 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1"></span>
-                                <span className="absolute -left-3 top-1/2 w-2 h-2 bg-green-400 rounded-full opacity-0 -translate-y-1/2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1"></span>
+                                <span className="absolute left-0 bottom-0 w-full h-0.5 bg-green-800 opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1"></span>
+                                <span className="absolute -left-3 top-1/2 w-2 h-2 bg-green-800 rounded-full opacity-0 -translate-y-1/2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1"></span>
                             </span>
 
                         </li>
