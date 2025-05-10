@@ -1,4 +1,4 @@
-import QuadradoQuemSomos from "../Components/QuadradoQuemSomos"
+import QuadradoSistemas from "../Components/QuadradoSistemas"
 
 function WeAre() {
 
@@ -17,7 +17,7 @@ function WeAre() {
 
       <div className="grid grid-cols-auto-fit min-[300px] gap-8 mt-10">
 
-        <QuadradoQuemSomos/>
+        <QuadradoSistemas/>
 
       </div>
     </div>
