@@ -15,16 +15,16 @@ function CyberSec() {
   return (
     <div>
       <div className="text-center flex flex-col items-center justify-center">
-        <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent mb-2 animate-pulse leading-snug">
+        <h1 className="text-5xl sm:text-5xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent mb-2 animate-pulse leading-snug">
           Segurança da Informação
 
         </h1>
-        <p className="text-2xl font-serif text-white">
+        <p className="text-2xl sm:text-2xl font-serif text-white">
           Práticas e ferramentas para proteção dos sistemas e dados municipais
         </p>
       </div>
 
-      <div className="mt-10 mb-10 mx-auto bg-gray-500 p-6 rounded-xl shadow-xl w-full h-[800px] max-w-4xl flex flex-col text-white items-center
+      <div className="mt-10 mb-10 mx-auto bg-gray-500 p-6 rounded-xl shadow-xl w-full min-h-[700px] h-auto max-w-4xl flex flex-col text-white items-center
       border border-transparent hover:border-blue-400 hover:shadow-blue-400/50 hover:shadow-lg transition-all duration-300">
 
         <h3 className="text-2xl text-center font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent mb-2 leading-snug">
