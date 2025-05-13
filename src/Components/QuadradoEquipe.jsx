@@ -3,6 +3,7 @@ import { useState } from 'react';
 //motion está sendo utilizado, ignorar
 import { motion, AnimatePresence } from 'framer-motion';
 import DetalhesEquipe from "../Components/DetalhesEquipe";
+import ButtonSaibaMais from "../Components/ButtonSaibaMais";
 
 
 function QuadradoEquipe() {
@@ -27,9 +28,9 @@ function QuadradoEquipe() {
                     Os alunos desenvolvem competências em programação, banco de dados, redes, análise de sistemas, gestão de TI e segurança da informação.
                 </p>
 
-                <button onClick={() => setSaibaMais(true)} className="text-white bg-blue-500 border-2 border-blue-800 px-20 py-2 rounded-2xl hover:bg-blue-800 hover:text-white transition">
-                    Saiba mais
-                </button>
+                <ButtonSaibaMais onClick={() => setSaibaMais(true)} />
+                   
+                
             </div>
 
             <AnimatePresence>

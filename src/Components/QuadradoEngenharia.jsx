@@ -3,7 +3,7 @@ import { useState } from 'react';
 //motion está sendo utilizado, ignorar
 import { motion, AnimatePresence } from 'framer-motion';
 import DetalhesEngenharia from "../Components/DetalhesEngenharia";
-
+import ButtonSaibaMais from "../Components/ButtonSaibaMais";
 
 function QuadradoSistemas() {
     const [saibaMais, setSaibaMais] = useState(false);
@@ -27,9 +27,8 @@ function QuadradoSistemas() {
                     Os alunos desenvolvem habilidades em arquitetura de software, metodologias ágeis, qualidade e testes.
                 </p>
 
-                <button onClick={() => setSaibaMais(true)} className="text-white bg-blue-500 border-2 border-blue-800 px-20 py-2 rounded-2xl hover:bg-blue-800 hover:text-white transition">
-                    Saiba mais
-                </button>
+                <ButtonSaibaMais onClick={() => setSaibaMais(true)}/>
+                
             </div>
 
             <AnimatePresence>

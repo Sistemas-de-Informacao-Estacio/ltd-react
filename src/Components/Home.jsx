@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Apps from "../Components/Apps";
 import About from "../Components/About";
+import ButtonSaibaMais from "../Components/ButtonSaibaMais";
 
 function Home() {
   const [app, setApp] = useState('Home');
@@ -33,9 +34,8 @@ function Home() {
             Nossos Aplicativos
           </button>
 
-          <button onClick={() => handleNavegação('Sobre')} className="bg-transparent border-2 border-blue-600 text-blue-600 px-6 py-2 rounded hover:bg-blue-600 hover:text-white transition">
-            Saiba mais
-          </button>
+          <ButtonSaibaMais onClick={() => handleNavegação('Sobre')}/>
+         
 
         </div >
       </section>
