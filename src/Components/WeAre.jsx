@@ -1,4 +1,6 @@
-import QuadradoSistemas from "../Components/QuadradoSistemas"
+import QuadradoSistemas from "../Components/QuadradoSistemas";
+import QuadradoEngenharia from "../Components/QuadradoEngenharia";
+import QuadradoEquipe from "../Components/QuadradoEquipe";
 
 function WeAre() {
 
@@ -15,9 +17,11 @@ function WeAre() {
         </p>
       </div>
 
-      <div className="grid grid-cols-auto-fit min-[300px] gap-8 mt-10">
+      <div className="grid grid-cols-1 place-items-center md:grid-cols-3 gap-8 mt-10">
 
         <QuadradoSistemas/>
+        <QuadradoEngenharia/>
+        <QuadradoEquipe/>
 
       </div>
     </div>
