@@ -56,6 +56,7 @@ function Footer() {
               <li><Link to="/apps" className="text-gray-300 hover:text-white transition-colors">Aplicativos</Link></li>
               <li><Link to="/tecnologias" className="text-gray-300 hover:text-white transition-colors">Tecnologias</Link></li>
               <li><Link to="/cybersec" className="text-gray-300 hover:text-white transition-colors">Cibersegurança</Link></li>
+              <li><Link to="/documentos" className="text-gray-300 hover:text-white transition-colors">Documentos</Link></li>
               <li><Link to="/noticias" className="text-gray-300 hover:text-white transition-colors">Notícias</Link></li>
               <li><Link to="/contato" className="text-gray-300 hover:text-white transition-colors">Contato</Link></li>
             </ul>
