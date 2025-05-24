@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import './Contato.css';
+import '../Contato.css';
+import CookieManager from './CookieManager';
 
 function Contato() {
   // Estados para gerenciar formulário
@@ -316,6 +317,11 @@ function Contato() {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Seção de Gerenciamento de Cookies */}
+      <div className="contato-content mt-16">
+        <CookieManager />
       </div>
       
       <div className="contato-map-section">
