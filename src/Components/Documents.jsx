@@ -202,7 +202,7 @@ function Documents() {
                     </h1>
                     <p className="text-xl text-gray-300 max-w-3xl mx-auto">
                         Acesse nossa coleção completa de manuais, guias e documentos técnicos desenvolvidos pelo 
-                        Laboratório de Tecnologia e Desenvolvimento para modernização do setor público
+                        Laboratório de Transformação Digital para modernização do setor público
                     </p>
                 </div>
 

@@ -17,7 +17,7 @@ function DetalhesEngenharia({ onClose }) {
             </h4>
 
             <p className="text-white text-justify">
-                O Laboratório de Tecnologia e Desenvolvimento (LTD) conta com uma equipe diversificada de estudantes em diferentes estágios de formação, desde calouros até veteranos próximos à formatura.
+                O Laboratório de Transformação Digital (LTD) conta com uma equipe diversificada de estudantes em diferentes estágios de formação, desde calouros até veteranos próximos à formatura.
             </p>
 
             <h4 className="text-3xl font-bold mb-4 text-gray-900">

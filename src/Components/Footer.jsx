@@ -16,7 +16,7 @@ function Footer() {
               </span>
             </Link>
             <p className="text-gray-300 mb-6 max-w-md">
-              Laboratório de Tecnologia e Desenvolvimento da Estácio, criando soluções inovadoras 
+              Laboratório de Transformação Digital da Estácio, criando soluções inovadoras 
               para o setor público em parceria com as prefeituras de São José e Florianópolis.
             </p>
             <div className="flex gap-4">
@@ -86,7 +86,7 @@ function Footer() {
 
         <div className="border-t border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="text-gray-400 text-sm mb-4 md:mb-0">
-            © 2025 Laboratório de Tecnologia e Desenvolvimento - Estácio Florianópolis. Todos os direitos reservados.
+            © 2025 Laboratório de Transformação Digital - Estácio Florianópolis. Todos os direitos reservados.
           </div>
           <div className="flex gap-6 text-sm text-gray-400">
             <Link to="/contato" className="hover:text-white transition-colors">Política de Privacidade</Link>

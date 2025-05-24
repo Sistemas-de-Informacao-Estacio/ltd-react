@@ -20,7 +20,7 @@ function About() {
                         Sobre o LTD
                     </h1>
                     <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-                        Conheça mais sobre o Laboratório de Tecnologia e Desenvolvimento e nossa missão de transformar o setor público através da inovação tecnológica
+                        Conheça mais sobre o Laboratório de Transformação Digital e nossa missão de transformar o setor público através da inovação tecnológica
                     </p>
                 </div>
 
@@ -32,7 +32,7 @@ function About() {
                             <h2 className="text-3xl font-bold text-white">Nossa Missão</h2>
                         </div>
                         <p className="text-gray-300 text-lg leading-relaxed">
-                            O Laboratório de Tecnologia e Desenvolvimento (LTD) tem como missão desenvolver soluções tecnológicas inovadoras 
+                            O Laboratório de Transformação Digital (LTD) tem como missão desenvolver soluções tecnológicas inovadoras 
                             que modernizem e otimizem os processos do setor público. Através da parceria estratégica entre a Universidade Estácio 
                             e as prefeituras de São José e Florianópolis, criamos um ambiente de aprendizado prático onde estudantes e profissionais 
                             trabalham em projetos reais que impactam diretamente a vida dos cidadãos.

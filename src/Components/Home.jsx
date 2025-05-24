@@ -18,7 +18,7 @@ function Home() {
       
       <section className="text-center p-8 mb-16">
         <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent mb-6 animate-pulse leading-tight">
-          Laboratório de Tecnologia e Desenvolvimento
+          Laboratório de Transformação Digital
         </h1>
         <p className="text-2xl font-serif max-w-xl text-center mx-auto mb-8">
           Uma parceria entre a Estácio e as Prefeituras de São José e Florianópolis para inovação tecnológica no setor público

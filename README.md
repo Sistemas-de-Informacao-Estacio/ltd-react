@@ -1,4 +1,4 @@
-# 🚀 LTD - Laboratório de Tecnologia e Desenvolvimento
+# 🚀 LTD - Laboratório de Transformação Digital
 
 <div align="center">
 
@@ -34,7 +34,7 @@
 
 ## 🎯 Sobre o Projeto
 
-O **LTD (Laboratório de Tecnologia e Desenvolvimento)** é uma plataforma digital inovadora desenvolvida para modernizar e otimizar processos no setor público através de tecnologias emergentes. Nossa missão é democratizar o acesso a ferramentas de alta qualidade em **Cibersegurança**, **Inteligência Artificial** e **Análise de Dados**.
+O **LTD (Laboratório de Transformação Digital)** é uma plataforma digital inovadora desenvolvida para modernizar e otimizar processos no setor público através de tecnologias emergentes. Nossa missão é democratizar o acesso a ferramentas de alta qualidade em **Cibersegurança**, **Inteligência Artificial** e **Análise de Dados**.
 
 ### 🎯 Objetivos
 
@@ -390,7 +390,7 @@ Este projeto está licenciado sob a **MIT License**.
 ```
 MIT License
 
-Copyright (c) 2025 LTD - Laboratório de Tecnologia e Desenvolvimento
+Copyright (c) 2025 LTD - Laboratório de Transformação Digital
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -461,7 +461,7 @@ SOFTWARE.
 
 ### Equipe de Desenvolvimento
 
-**LTD - Laboratório de Tecnologia e Desenvolvimento**
+**LTD - Laboratório de Transformação Digital**
 - 🌐 **Website**: [ltd.gov.br](https://ltd.gov.br)
 - 📧 **Email**: contato@ltd.gov.br
 - 📱 **GitHub**: [@LTD-2025-1-Cyber-Security-Project](https://github.com/LTD-2025-1-Cyber-Security-Project)
