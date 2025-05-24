@@ -9,6 +9,7 @@ import Technologies from "./Components/Technologies";
 import WeAre from "./Components/WeAre";
 import CyberSec from "./Components/CyberSec";
 import Noticias from "./Components/Noticias";
+import Documents from "./Components/Documents";
 import Footer from "./Components/Footer";
 import CookieBanner from "./Components/CookieBanner";
 
@@ -27,6 +28,7 @@ function App() {
             <Route path="/tecnologias" element={<Technologies />} />
             <Route path="/contato" element={<Contact />} />
             <Route path="/noticias" element={<Noticias />} />
+            <Route path="/documentos" element={<Documents />} />
             <Route path="*" element={<Home />} />
           </Routes>
         </div>
