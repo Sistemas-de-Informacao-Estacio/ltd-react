@@ -36,13 +36,17 @@ get_commit_message() {
             if [[ $file =~ Components/ ]]; then
                 case $file in
                     */Nav.jsx) echo "feat(nav): implementar roteamento dinâmico com React Router" ;;
-                    */Home.jsx) echo "feat(home): adicionar links interativos e melhorar UX" ;;
-                    */Footer.jsx) echo "feat(footer): adicionar navegação com links do React Router" ;;
-                    */Apps.jsx) echo "feat(apps): atualizar interface de aplicativos" ;;
-                    */Contact.jsx) echo "feat(contact): integrar gerenciador de cookies" ;;
-                    */Technologies.jsx) echo "feat(tech): adicionar modal interativo para projetos" ;;
-                    */CookieBanner.jsx) echo "feat(cookies): implementar sistema de consentimento LGPD" ;;
-                    */CookieManager.jsx) echo "feat(cookies): adicionar gerenciador de preferências" ;;
+                    */Home.jsx) echo "feat(home): adicionar links interativos e melhorar UX da página inicial" ;;
+                    */Footer.jsx) echo "feat(footer): integrar navegação com React Router e melhorar design" ;;
+                    */Apps.jsx) echo "feat(apps): atualizar interface de aplicativos governamentais" ;;
+                    */Contact.jsx) echo "feat(contact): implementar gerenciador de cookies e melhorar formulário" ;;
+                    */Technologies.jsx) echo "feat(tech): adicionar modal interativo para showcase de projetos" ;;
+                    */Documents.jsx) echo "fix(documents): corrigir erros de sintaxe JSX e restruturar componente da biblioteca" ;;
+                    */CookieBanner.jsx) echo "feat(cookies): implementar banner de consentimento LGPD compliant" ;;
+                    */CookieManager.jsx) echo "feat(cookies): adicionar gerenciador avançado de preferências" ;;
+                    */News.jsx) echo "feat(news): implementar sistema de notícias do setor público" ;;
+                    */Projects.jsx) echo "feat(projects): criar showcase de projetos LTD" ;;
+                    */Services.jsx) echo "feat(services): adicionar catálogo de serviços tecnológicos" ;;
                     *) echo "feat(components): atualizar componente $(basename $file .jsx)" ;;
                 esac
             else
@@ -51,47 +55,58 @@ get_commit_message() {
             ;;
         
         # Arquivos de configuração
-        package.json) echo "deps: adicionar react-router-dom para roteamento" ;;
-        package-lock.json) echo "deps: atualizar lock file das dependências" ;;
-        vite.config.js) echo "config: configurar Vite para build otimizado" ;;
-        tailwind.config.js) echo "style: configurar Tailwind CSS" ;;
-        eslint.config.js) echo "config: configurar ESLint para qualidade de código" ;;
+        package.json) echo "deps: adicionar react-router-dom e react-icons para navegação e UI" ;;
+        package-lock.json) echo "deps: atualizar lock file com novas dependências" ;;
+        vite.config.js) echo "config: otimizar configuração Vite para build de produção" ;;
+        tailwind.config.js) echo "style: configurar Tailwind CSS com tema customizado" ;;
+        eslint.config.js) echo "config: configurar ESLint para React e qualidade de código" ;;
         
         # Arquivos de estilo
         *.css) 
             case $file in
-                */App.css) echo "style: atualizar estilos globais da aplicação" ;;
-                */Contato.css) echo "style: melhorar estilos da página de contato" ;;
-                */Noticias.css) echo "style: aprimorar design da seção de notícias" ;;
+                */App.css) echo "style: atualizar estilos globais e variáveis CSS" ;;
+                */Contato.css) echo "style: melhorar design responsivo da página de contato" ;;
+                */Noticias.css) echo "style: aprimorar layout da seção de notícias" ;;
+                */Documents.css) echo "style: ajustar estilos da biblioteca de documentos" ;;
                 *) echo "style: atualizar estilos de $(basename $file .css)" ;;
             esac
             ;;
         
         # Arquivos de documentação
-        README.md) echo "docs: atualizar documentação do projeto" ;;
+        README.md) echo "docs: atualizar documentação do projeto TechPrefeitura" ;;
         .gitignore) echo "config: atualizar arquivos ignorados pelo Git" ;;
         
         # Arquivo principal da aplicação
-        src/App.jsx) echo "feat(app): implementar sistema de roteamento completo" ;;
-        src/main.jsx) echo "config: configurar ponto de entrada da aplicação" ;;
+        src/App.jsx) echo "feat(app): implementar sistema de roteamento completo com React Router" ;;
+        src/main.jsx) echo "config: configurar ponto de entrada da aplicação React" ;;
         
         # Arquivos HTML
-        index.html) echo "feat(html): atualizar estrutura base da página" ;;
+        index.html) echo "feat(html): atualizar estrutura base e metadados da aplicação" ;;
         
         # Scripts e automação
-        *.sh) echo "ci: adicionar script de automação de commits" ;;
+        *.sh) echo "ci: adicionar/atualizar script de automação de commits inteligente" ;;
         
-        # Assets
-        *.svg|*.png|*.jpg|*.jpeg) echo "assets: adicionar/atualizar recursos visuais" ;;
+        # Assets e recursos
+        *.svg|*.png|*.jpg|*.jpeg|*.ico) echo "assets: adicionar/atualizar recursos visuais do projeto" ;;
         
-        # Default
+        # Arquivos de dados
+        *.json)
+            case $file in
+                */data/*) echo "data: atualizar dados de $(basename $file .json)" ;;
+                *) echo "config: atualizar configuração $(basename $file .json)" ;;
+            esac
+            ;;
+        
+        # Default baseado no status
         *) 
             if [[ $status == "A" ]]; then
-                echo "feat: adicionar $(basename $file)"
+                echo "feat: adicionar $(basename $file) ao projeto"
             elif [[ $status == "D" ]]; then
-                echo "remove: remover $(basename $file)"
+                echo "remove: remover $(basename $file) desnecessário"
+            elif [[ $status == "M" ]]; then
+                echo "update: atualizar $(basename $file) com melhorias"
             else
-                echo "update: atualizar $(basename $file)"
+                echo "chore: manutenção em $(basename $file)"
             fi
             ;;
     esac
@@ -119,6 +134,19 @@ show_status() {
     print_color $BLUE "📊 Status atual do repositório:"
     echo ""
     git status --short
+    echo ""
+    
+    # Mostrar estatísticas
+    local modified=$(git status --porcelain | grep "^.M" | wc -l)
+    local added=$(git status --porcelain | grep "^A" | wc -l)
+    local deleted=$(git status --porcelain | grep "^.D" | wc -l)
+    local untracked=$(git status --porcelain | grep "^??" | wc -l)
+    
+    print_color $CYAN "📈 Estatísticas:"
+    print_color $WHITE "  • Modificados: $modified"
+    print_color $WHITE "  • Adicionados: $added"
+    print_color $WHITE "  • Removidos: $deleted"
+    print_color $WHITE "  • Não rastreados: $untracked"
     echo ""
 }
 
@@ -164,6 +192,9 @@ commit_individual() {
     local statuses=($(git status --porcelain | awk '{print $1}'))
     
     local count=0
+    local success=0
+    local failed=0
+    
     for i in "${!files[@]}"; do
         local file="${files[$i]}"
         local status="${statuses[$i]}"
@@ -179,15 +210,20 @@ commit_individual() {
             
             if [[ $? -eq 0 ]]; then
                 print_color $GREEN "✅ Commit realizado com sucesso!"
-                ((count++))
+                ((success++))
             else
                 print_color $RED "❌ Erro no commit de $file"
+                ((failed++))
             fi
+            ((count++))
             echo ""
         fi
     done
     
-    print_color $GREEN "🎉 Total de commits realizados: $count"
+    print_color $GREEN "🎉 Resumo dos commits individuais:"
+    print_color $WHITE "  • Total processados: $count"
+    print_color $WHITE "  • Sucessos: $success"
+    print_color $WHITE "  • Falhas: $failed"
 }
 
 # Commit agrupado por tipo
@@ -207,31 +243,35 @@ commit_grouped() {
             case $file in
                 *.jsx|*.tsx)
                     groups["components"]+="$file "
-                    group_files["components"]="feat(components): atualizar componentes React"
+                    group_files["components"]="feat(components): atualizar componentes React e corrigir sintaxe JSX"
                     ;;
                 *.css)
                     groups["styles"]+="$file "
-                    group_files["styles"]="style: atualizar estilos da aplicação"
+                    group_files["styles"]="style: atualizar estilos e melhorar design responsivo"
                     ;;
                 package*.json)
                     groups["deps"]+="$file "
-                    group_files["deps"]="deps: atualizar dependências do projeto"
+                    group_files["deps"]="deps: atualizar dependências e configurações do projeto"
                     ;;
-                *.config.js|*.config.ts)
+                *.config.js|*.config.ts|vite.config.*|tailwind.config.*)
                     groups["config"]+="$file "
-                    group_files["config"]="config: atualizar configurações do projeto"
+                    group_files["config"]="config: otimizar configurações de build e desenvolvimento"
                     ;;
                 *.md)
                     groups["docs"]+="$file "
-                    group_files["docs"]="docs: atualizar documentação"
+                    group_files["docs"]="docs: atualizar documentação e guias do projeto"
                     ;;
                 *.sh)
                     groups["scripts"]+="$file "
-                    group_files["scripts"]="ci: atualizar scripts de automação"
+                    group_files["scripts"]="ci: melhorar scripts de automação e deploy"
+                    ;;
+                *.svg|*.png|*.jpg|*.jpeg|*.ico)
+                    groups["assets"]+="$file "
+                    group_files["assets"]="assets: adicionar/otimizar recursos visuais"
                     ;;
                 *)
                     groups["misc"]+="$file "
-                    group_files["misc"]="update: atualizações diversas"
+                    group_files["misc"]="chore: atualizações diversas e manutenção"
                     ;;
             esac
         fi
@@ -239,26 +279,32 @@ commit_grouped() {
     
     # Fazer commit para cada grupo
     local count=0
+    local success=0
+    
     for group in "${!groups[@]}"; do
         local files=(${groups[$group]})
         local message="${group_files[$group]}"
         
         print_color $CYAN "📦 Grupo: $group (${#files[@]} arquivos)"
         print_color $PURPLE "💬 Mensagem: $message"
+        print_color $WHITE "📂 Arquivos: ${files[*]}"
         
         git add "${files[@]}"
         git commit -m "$message"
         
         if [[ $? -eq 0 ]]; then
             print_color $GREEN "✅ Commit do grupo '$group' realizado!"
-            ((count++))
+            ((success++))
         else
             print_color $RED "❌ Erro no commit do grupo '$group'"
         fi
+        ((count++))
         echo ""
     done
     
-    print_color $GREEN "🎉 Total de grupos commitados: $count"
+    print_color $GREEN "🎉 Resumo dos commits agrupados:"
+    print_color $WHITE "  • Grupos processados: $count"
+    print_color $WHITE "  • Sucessos: $success"
 }
 
 # Commit único para todas as mudanças
@@ -266,14 +312,33 @@ commit_single() {
     print_color $GREEN "🔄 Fazendo commit único para todas as mudanças..."
     
     local total_files=$(git status --porcelain | wc -l)
-    local commit_msg="feat: implementar sistema completo de roteamento e cookies ($total_files arquivos)"
+    local commit_msg="feat: implementar sistema completo TechPrefeitura com biblioteca de documentos"
     
-    if confirm_action "Fazer commit único com mensagem: '$commit_msg'?"; then
+    # Adicionar detalhes baseados nos tipos de arquivo
+    local has_jsx=$(git status --porcelain | grep -E "\.(jsx|tsx)$" | wc -l)
+    local has_css=$(git status --porcelain | grep -E "\.css$" | wc -l)
+    local has_config=$(git status --porcelain | grep -E "\.(config|json)$" | wc -l)
+    
+    if [[ $has_jsx -gt 0 && $has_css -gt 0 ]]; then
+        commit_msg="feat: implementar sistema completo com componentes React e estilos ($total_files arquivos)"
+    elif [[ $has_jsx -gt 0 ]]; then
+        commit_msg="feat: corrigir e melhorar componentes React ($total_files arquivos)"
+    elif [[ $has_css -gt 0 ]]; then
+        commit_msg="style: atualizar estilos e design da aplicação ($total_files arquivos)"
+    elif [[ $has_config -gt 0 ]]; then
+        commit_msg="config: atualizar configurações do projeto ($total_files arquivos)"
+    fi
+    
+    print_color $PURPLE "💬 Mensagem proposta: $commit_msg"
+    echo ""
+    
+    if confirm_action "Fazer commit único com esta mensagem?"; then
         git add .
         git commit -m "$commit_msg"
         
         if [[ $? -eq 0 ]]; then
             print_color $GREEN "✅ Commit único realizado com sucesso!"
+            print_color $WHITE "📊 $total_files arquivos commitados"
         else
             print_color $RED "❌ Erro no commit único"
         fi
@@ -284,36 +349,54 @@ commit_single() {
 
 # Função para mostrar ajuda
 show_help() {
-    print_color $CYAN "📖 Uso do script:"
+    print_color $CYAN "📖 Uso do TechPrefeitura Auto Commit:"
     echo ""
     print_color $WHITE "  $0 [MODO] [OPÇÕES]"
     echo ""
     print_color $CYAN "🎯 Modos disponíveis:"
-    print_color $WHITE "  individual  - Commit separado para cada arquivo"
-    print_color $WHITE "  grouped     - Commit agrupado por tipo de arquivo"
-    print_color $WHITE "  single      - Commit único para todas as mudanças"
+    print_color $WHITE "  individual  - Commit separado para cada arquivo (recomendado para desenvolvimento)"
+    print_color $WHITE "  grouped     - Commit agrupado por tipo de arquivo (ideal para releases)"
+    print_color $WHITE "  single      - Commit único para todas as mudanças (para hotfixes)"
     echo ""
     print_color $CYAN "⚙️  Opções:"
     print_color $WHITE "  -h, --help     - Mostrar esta ajuda"
-    print_color $WHITE "  -s, --status   - Mostrar apenas o status"
+    print_color $WHITE "  -s, --status   - Mostrar apenas o status detalhado"
     print_color $WHITE "  -p, --push     - Fazer push após commits"
-    print_color $WHITE "  -f, --force    - Não pedir confirmação"
+    print_color $WHITE "  -f, --force    - Não pedir confirmação (modo automático)"
     echo ""
-    print_color $CYAN "💡 Exemplos:"
-    print_color $WHITE "  $0 individual          # Commit individual"
-    print_color $WHITE "  $0 grouped --push      # Commit agrupado + push"
+    print_color $CYAN "💡 Exemplos de uso:"
+    print_color $WHITE "  $0 individual          # Commit individual com mensagens inteligentes"
+    print_color $WHITE "  $0 grouped --push      # Commit agrupado + push automático"
     print_color $WHITE "  $0 single --force      # Commit único sem confirmação"
+    print_color $WHITE "  $0 --status            # Ver apenas o status atual"
+    echo ""
+    print_color $CYAN "🚀 Especial para TechPrefeitura:"
+    print_color $WHITE "  • Detecta automaticamente correções de sintaxe JSX"
+    print_color $WHITE "  • Mensagens específicas para componentes React"
+    print_color $WHITE "  • Suporte para biblioteca de documentos técnicos"
+    print_color $WHITE "  • Integração com sistema de cookies LGPD"
 }
 
 # Função para fazer push
 do_push() {
     if confirm_action "Fazer push para o repositório remoto?"; then
         print_color $BLUE "📤 Fazendo push..."
-        git push
+        
+        # Verificar se existe remote
+        if ! git remote | grep -q "origin"; then
+            print_color $RED "❌ Nenhum remote 'origin' configurado!"
+            print_color $YELLOW "💡 Configure com: git remote add origin <URL>"
+            return 1
+        fi
+        
+        git push origin $(git branch --show-current)
+        
         if [[ $? -eq 0 ]]; then
             print_color $GREEN "✅ Push realizado com sucesso!"
+            print_color $WHITE "🌐 Código disponível no repositório remoto"
         else
             print_color $RED "❌ Erro no push"
+            print_color $YELLOW "💡 Verifique a conectividade e permissões"
         fi
     fi
 }
@@ -373,9 +456,9 @@ main() {
     # Se modo não foi especificado, perguntar
     if [[ -z $mode ]]; then
         print_color $CYAN "🤔 Escolha o modo de commit:"
-        print_color $WHITE "1) Individual - Cada arquivo separadamente"
-        print_color $WHITE "2) Agrupado - Por tipo de arquivo"
-        print_color $WHITE "3) Único - Todas as mudanças juntas"
+        print_color $WHITE "1) Individual - Cada arquivo separadamente (melhor para debug)"
+        print_color $WHITE "2) Agrupado - Por tipo de arquivo (recomendado)"
+        print_color $WHITE "3) Único - Todas as mudanças juntas (para releases)"
         echo ""
         print_color $YELLOW "Digite sua escolha (1-3): "
         read -r choice
@@ -385,7 +468,7 @@ main() {
             2) mode="grouped" ;;
             3) mode="single" ;;
             *) 
-                print_color $RED "❌ Escolha inválida!"
+                print_color $RED "❌ Escolha inválida! Use 1, 2 ou 3."
                 exit 1
                 ;;
         esac
@@ -394,20 +477,23 @@ main() {
     # Confirmar ação se não estiver em modo force
     if [[ $force_mode == false ]]; then
         if ! confirm_action "Prosseguir com commit em modo '$mode'?"; then
-            print_color $YELLOW "🚫 Operação cancelada."
+            print_color $YELLOW "🚫 Operação cancelada pelo usuário."
             exit 0
         fi
     fi
     
     # Executar commit
+    print_color $BLUE "⚡ Iniciando processo de commit..."
     auto_commit "$mode"
     
     # Push se solicitado
     if [[ $do_push_after == true ]]; then
+        echo ""
         do_push
     fi
     
-    print_color $GREEN "🎉 Processo concluído com sucesso!"
+    print_color $GREEN "🎉 Processo TechPrefeitura Auto Commit concluído!"
+    print_color $CYAN "💡 Obrigado por usar nossa ferramenta de automação!"
 }
 
 # Executar função principal com todos os argumentos
