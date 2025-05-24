@@ -20,6 +20,7 @@ function Nav() {
         { name: 'Apps', path: '/apps' },
         { name: 'CyberSec', path: '/cybersec' },
         { name: 'Tecnologias', path: '/tecnologias' },
+        { name: 'Docs', path: '/documentos' },
         { name: 'Contato', path: '/contato' },
         { name: 'Notícias', path: '/noticias' }
     ];
