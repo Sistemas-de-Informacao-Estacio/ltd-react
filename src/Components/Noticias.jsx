@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import './Noticias.css';
+import '../Noticias.css';
 import { FiRefreshCw, FiExternalLink, FiClock, FiBookmark, FiGlobe, FiGrid } from 'react-icons/fi';
 import { AiOutlineSafety, AiOutlineRobot } from 'react-icons/ai';
 import { TbBrain, TbDeviceDesktop } from 'react-icons/tb';
