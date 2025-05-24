@@ -14,7 +14,7 @@ function Documents() {
             type: "Checklist",
             pages: "12 páginas",
             size: "2.3 MB",
-            lastUpdate: "2024-12-15",
+            lastUpdate: "2025-12-15",
             tags: ["auditoria", "compliance", "ISO 27001", "LGPD"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/blob/main/docs/checklist_mensal_de_seguranca_da_informacao.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/raw/main/docs/checklist_mensal_de_seguranca_da_informacao.pdf"
@@ -27,7 +27,7 @@ function Documents() {
             type: "Manual Técnico",
             pages: "45 páginas",
             size: "5.8 MB",
-            lastUpdate: "2024-12-10",
+            lastUpdate: "2025-12-10",
             tags: ["OSINT", "reconhecimento", "ethical hacking", "penetration testing"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/blob/main/docs/manual_completo_google_dorks_ciberseguranca.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/raw/main/docs/manual_completo_google_dorks_ciberseguranca.pdf"
@@ -40,7 +40,7 @@ function Documents() {
             type: "Manual",
             pages: "78 páginas",
             size: "8.2 MB",
-            lastUpdate: "2024-12-08",
+            lastUpdate: "2025-12-08",
             tags: ["fundamentos", "gestão de riscos", "incidentes", "compliance"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/blob/main/docs/manual_de_seguranca_cibernetica.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/raw/main/docs/manual_de_seguranca_cibernetica.pdf"
@@ -53,7 +53,7 @@ function Documents() {
             type: "Resumo Executivo",
             pages: "24 páginas",
             size: "3.1 MB",
-            lastUpdate: "2024-12-05",
+            lastUpdate: "2025-12-05",
             tags: ["ISO 27001", "ISO 27002", "normas", "implementação"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/blob/main/docs/resumo_pratico_das_isos.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/ciber-seguranca/raw/main/docs/resumo_pratico_das_isos.pdf"
@@ -66,7 +66,7 @@ function Documents() {
             type: "Curso",
             pages: "67 páginas",
             size: "12.4 MB",
-            lastUpdate: "2024-12-12",
+            lastUpdate: "2025-12-12",
             tags: ["ChatGPT", "prompt engineering", "automação", "produtividade"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/inteligencia-artificial/blob/main/docs/curso/curso-chatgpt.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/inteligencia-artificial/raw/main/docs/curso/curso-chatgpt.pdf"
@@ -79,7 +79,7 @@ function Documents() {
             type: "Guia Prático",
             pages: "89 páginas",
             size: "15.7 MB",
-            lastUpdate: "2024-12-07",
+            lastUpdate: "2025-12-07",
             tags: ["machine learning", "NLP", "computer vision", "implementação"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/inteligencia-artificial/blob/main/docs/manual/guia-pratico-ia.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/inteligencia-artificial/raw/main/docs/manual/guia-pratico-ia.pdf"
@@ -92,7 +92,7 @@ function Documents() {
             type: "Guia Técnico",
             pages: "56 páginas",
             size: "9.3 MB",
-            lastUpdate: "2024-12-03",
+            lastUpdate: "2025-12-03",
             tags: ["LGPD", "análise estatística", "visualização", "transparência"],
             url: "https://github.com/LTD-2025-1-Cyber-Security-Project/analise-de-dados/blob/main/docs/tratamento_dados/guia_tratamento_de_dados.pdf",
             downloadUrl: "https://github.com/LTD-2025-1-Cyber-Security-Project/analise-de-dados/raw/main/docs/tratamento_dados/guia_tratamento_de_dados.pdf"
