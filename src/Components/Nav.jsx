@@ -18,7 +18,7 @@ function Nav() {
         { name: 'Sobre', path: '/sobre' },
         { name: 'Quem Somos', path: '/quem-somos' },
         { name: 'Apps', path: '/apps' },
-        { name: 'CyberSec', path: '/cybersec' },
+        { name: 'Cyber', path: '/cybersec' },
         { name: 'Tecnologias', path: '/tecnologias' },
         { name: 'Docs', path: '/documentos' },
         { name: 'Contato', path: '/contato' },
