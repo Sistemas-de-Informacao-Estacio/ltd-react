@@ -9,7 +9,7 @@
 
 **Plataforma Digital para Modernização do Setor Público**
 
-[🌐 Demo](https://ltd-react-app.vercel.app) • [📖 Documentação](https://github.com/LTD-2025-1-Cyber-Security-Project) • [🐛 Issues](https://github.com/LTD-2025-1-Cyber-Security-Project/issues) • [💬 Discussões](https://github.com/LTD-2025-1-Cyber-Security-Project/discussions)
+[🌐 Demo](https://ltdestacio.com.br) • [📖 Documentação](https://github.com/LTD-2025-1-Cyber-Security-Project) • [🐛 Issues](https://github.com/LTD-2025-1-Cyber-Security-Project/issues) • [💬 Discussões](https://github.com/LTD-2025-1-Cyber-Security-Project/discussions)
 
 </div>
 
