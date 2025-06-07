@@ -48,7 +48,7 @@ export const adminLogin = async (username, password) => {
       username: user.username,
       full_name: user.full_name || 'Administrador',
       email: user.email,
-      role: user.role || 'admin',
+      role: user.role || 'vagnercordeiro2025',
       loginTime: new Date().toISOString()
     };
 
