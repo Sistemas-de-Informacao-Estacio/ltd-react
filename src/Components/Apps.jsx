@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
+import { FaSearch, FaTimes, FaDownload, FaInfoCircle } from 'react-icons/fa';
+import './Apps.css';
 
 function Apps() {
   const [apps, setApps] = useState([]);
@@ -31,23 +33,18 @@ function Apps() {
     }
   };
 
-  // Lista de categorias disponíveis, extraídas dinamicamente dos apps
   const categories = ["Todos", ...new Set(apps.map(app => app.category))];
 
-  // Função para exibir detalhes de um aplicativo
   const showAppDetails = (app) => {
     setSelectedApp(app);
-    window.scrollTo(0, 0);
     document.body.style.overflow = 'hidden';
   };
 
-  // Função para fechar a visualização detalhada
   const closeDetails = () => {
     setSelectedApp(null);
     document.body.style.overflow = 'auto';
   };
 
-  // Função de download
   const downloadApp = (app) => {
     const link = document.createElement('a');
     link.href = app.download_url;
@@ -61,7 +58,6 @@ function Apps() {
     displayNotification(`Iniciando download de ${app.name} (${app.size})`);
   };
 
-  // Função para mostrar notificação
   const displayNotification = (message) => {
     setNotificationMessage(message);
     setShowNotification(true);
@@ -71,7 +67,6 @@ function Apps() {
     }, 5000);
   };
   
-  // Ordenar aplicativos
   const sortApps = (apps, sortType) => {
     switch(sortType) {
       case 'name':
@@ -89,7 +84,6 @@ function Apps() {
     }
   };
   
-  // Filtrar aplicativos por categoria e termo de busca
   const filteredApps = apps.filter(app => {
     const categoryMatch = selectedCategory === "Todos" || app.category === selectedCategory;
     
@@ -103,224 +97,167 @@ function Apps() {
     return categoryMatch && (nameMatch || descMatch || featureMatch);
   });
 
-  // Aplicando a ordenação
   const sortedAndFilteredApps = sortApps(filteredApps, sortBy);
 
-  // Formatando o ícone de ordenação
-  const getSortIcon = (sortType) => {
-    if (sortBy === sortType) {
-      return "✓ ";
-    }
-    return "";
+  const getCategoryClass = (category) => {
+    const classes = {
+      "Cyber Segurança": "cyber-security",
+      "Desenvolvimento de Software": "software-development", 
+      "Inteligência Artificial": "artificial-intelligence",
+      "Análise de Dados": "data-analysis"
+    };
+    return classes[category] || "default";
   };
 
-  // Agrupar aplicativos por categoria para exibição
-  const appsByCategory = {};
-  categories.filter(cat => cat !== "Todos").forEach(category => {
-    appsByCategory[category] = sortedAndFilteredApps.filter(app => app.category === category);
-  });
-
   return (
-    <div className="apps-container">
-      <header className="apps-header">
-        <h1>Nossos Aplicativos</h1>
-        <p>Descubra nossa coleção de aplicativos desenvolvidos para facilitar seu trabalho</p>
-      </header>
-      
-      {/* Filtros e busca */}
-      <div className="filter-section">
-        <div className="category-filter">
-          <label htmlFor="category-select">Filtrar por categoria:</label>
-          <select 
-            id="category-select"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-            className="category-select"
-          >
-            {categories.map((category) => (
-              <option key={category} value={category}>{category}</option>
-            ))}
-          </select>
+    <div className="apps-page">
+      <div className="apps-container">
+        {/* Header */}
+        <header className="apps-header">
+          <h1>Nossos Aplicativos</h1>
+          <p>Descubra nossa coleção de aplicativos desenvolvidos para facilitar e modernizar a gestão pública municipal</p>
+        </header>
+        
+        {/* Filtros */}
+        <div className="apps-filters">
+          <div className="filters-row">
+            <div className="filter-group">
+              <label htmlFor="category-select">Categoria:</label>
+              <select 
+                id="category-select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="filter-select"
+              >
+                {categories.map((category) => (
+                  <option key={category} value={category}>{category}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="filter-group">
+              <label htmlFor="sort-select">Ordenar por:</label>
+              <select
+                id="sort-select"
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="filter-select"
+              >
+                <option value="name">Nome</option>
+                <option value="size">Tamanho</option>
+                <option value="latest">Mais recentes</option>
+              </select>
+            </div>
+            
+            <div className="search-container">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Buscar aplicativos..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+              {searchTerm && (
+                <button 
+                  className="clear-search" 
+                  onClick={() => setSearchTerm("")}
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
+          </div>
         </div>
         
-        <div className="search-box">
-          <input
-            type="text"
-            placeholder="Buscar aplicativos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          {searchTerm && (
-            <button 
-              className="clear-search" 
-              onClick={() => setSearchTerm("")}
-            >
-              ×
-            </button>
-          )}
+        {/* Informações de resultados */}
+        <div className="results-info">
+          <p>
+            {filteredApps.length === 0 ? 
+              'Nenhum aplicativo encontrado' : 
+              `${filteredApps.length} ${filteredApps.length === 1 ? 'aplicativo encontrado' : 'aplicativos encontrados'}`
+            }
+          </p>
         </div>
-        
-        {/* Menu de ordenação */}
-        <div className="sort-dropdown">
-          <label htmlFor="sort-select">Ordenar por:</label>
-          <select
-            id="sort-select"
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="sort-select"
-          >
-            <option value="name">{getSortIcon("name")}Nome</option>
-            <option value="size">{getSortIcon("size")}Tamanho</option>
-            <option value="latest">{getSortIcon("latest")}Mais recentes</option>
-          </select>
-        </div>
-      </div>
-      
-      {/* Contagem de resultados */}
-      <div className="results-count">
-        {filteredApps.length === 0 ? (
-          <p>Nenhum aplicativo encontrado</p>
-        ) : (
-          <p>Exibindo {filteredApps.length} {filteredApps.length === 1 ? 'aplicativo' : 'aplicativos'}</p>
-        )}
-      </div>
 
-      {/* Estado de carregamento */}
-      {isLoading ? (
-        <div className="loading-container">
-          <div className="loading-spinner"></div>
-          <p>Carregando aplicativos...</p>
-        </div>
-      ) : (
-        /* Seções de aplicativos por categoria */
-        selectedCategory === "Todos" ? (
-          // Quando "Todos" está selecionado, mostre aplicativos agrupados por categoria
-          Object.keys(appsByCategory).map(category => (
-            appsByCategory[category].length > 0 && (
-              <div key={category} className="category-section">
-                <h2 className="category-title">
-                  {category === "Cyber Segurança" && "🔒 "}
-                  {category === "Desenvolvimento de Software" && "💻 "}
-                  {category === "Inteligência Artificial" && "🧠 "}
-                  {category === "Análise de Dados" && "📊 "}
-                  {category}
-                </h2>
-                <div className="apps-grid">
-                  {appsByCategory[category].map((app) => (
-                    <div key={app.id} className="app-card" data-category={app.category}>
-                      <div className="app-card-content">
-                        <div className="category-tag">{app.category}</div>
-                        <div className="app-icon-wrapper">
-                          <div className="app-icon">{app.icon}</div>
-                        </div>
-                        <div className="app-info">
-                          <h2>{app.name}</h2>
-                          <p className="app-version">Versão {app.version}</p>
-                          <p className="app-description">{app.description}</p>
-                          <span className="app-size">Tamanho: {app.size}</span>
-                          <div className="app-actions">
-                            <button 
-                              className="details-button"
-                              onClick={() => showAppDetails(app)}
-                            >
-                              Detalhes
-                            </button>
-                            <button 
-                              className="download-button"
-                              onClick={() => downloadApp(app)}
-                            >
-                              Download
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )
-          ))
+        {/* Loading */}
+        {isLoading ? (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Carregando aplicativos...</p>
+          </div>
         ) : (
-          // Quando uma categoria específica está selecionada, mostre apenas esses aplicativos
+          /* Grid de aplicativos */
           <div className="apps-grid">
             {sortedAndFilteredApps.map((app) => (
-              <div key={app.id} className="app-card" data-category={app.category}>
-                <div className="app-card-content">
-                  <div className="category-tag">{app.category}</div>
-                  <div className="app-icon-wrapper">
+              <div key={app.id} className="app-card">
+                <div className="app-card-header">
+                  <div className={`category-badge ${getCategoryClass(app.category)}`}>
+                    {app.category}
+                  </div>
+                  <div className="app-icon-container">
                     <div className="app-icon">{app.icon}</div>
                   </div>
-                  <div className="app-info">
-                    <h2>{app.name}</h2>
-                    <p className="app-version">Versão {app.version}</p>
-                    <p className="app-description">{app.description}</p>
-                    <span className="app-size">Tamanho: {app.size}</span>
-                    <div className="app-actions">
-                      <button 
-                        className="details-button"
-                        onClick={() => showAppDetails(app)}
-                      >
-                        Detalhes
-                      </button>
-                      <button 
-                        className="download-button"
-                        onClick={() => downloadApp(app)}
-                      >
-                        Download
-                      </button>
-                    </div>
+                </div>
+                
+                <div className="app-content">
+                  <h2 className="app-title">{app.name}</h2>
+                  <p className="app-version">Versão {app.version}</p>
+                  <p className="app-description">{app.description}</p>
+                  <div className="app-size">
+                    📦 {app.size}
+                  </div>
+                  <div className="app-actions">
+                    <button 
+                      className="btn btn-secondary"
+                      onClick={() => showAppDetails(app)}
+                    >
+                      <FaInfoCircle />
+                      Detalhes
+                    </button>
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => downloadApp(app)}
+                    >
+                      <FaDownload />
+                      Download
+                    </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        )
-      )}
+        )}
 
-      {/* Modal de detalhes */}
-      {selectedApp && (
-        <div className="app-modal-overlay">
-          <div className="app-modal">
-            <button className="close-button" onClick={closeDetails}>×</button>
-            <div className="app-modal-header">
-              <div className="app-category-badge" style={{"--tag-rgb": 
-                selectedApp.category === "Cyber Segurança" ? "39, 174, 96" : 
-                selectedApp.category === "Desenvolvimento de Software" ? "52, 152, 219" : 
-                selectedApp.category === "Inteligência Artificial" ? "155, 89, 182" :
-                selectedApp.category === "Análise de Dados" ? "230, 126, 34" : "65, 88, 208"
-              }}>{selectedApp.category}</div>
-              <div className="app-header-content">
-                <div className="app-icon-large" style={{"--tag-rgb": 
-                  selectedApp.category === "Cyber Segurança" ? "39, 174, 96" : 
-                  selectedApp.category === "Desenvolvimento de Software" ? "52, 152, 219" : 
-                  selectedApp.category === "Inteligência Artificial" ? "155, 89, 182" :
-                  selectedApp.category === "Análise de Dados" ? "230, 126, 34" : "65, 88, 208"
-                }}>{selectedApp.icon}</div>
-                <div className="app-title-section">
-                  <h2>{selectedApp.name}</h2>
-                  <div className="app-meta">
-                    <p className="app-version">Versão {selectedApp.version}</p>
-                    <p className="app-size-badge">{selectedApp.size}</p>
+        {/* Modal de detalhes */}
+        {selectedApp && (
+          <div className="app-modal-overlay" onClick={closeDetails}>
+            <div className="app-modal" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <button className="modal-close" onClick={closeDetails}>
+                  <FaTimes />
+                </button>
+                <div className="modal-app-info">
+                  <div className="modal-app-icon">{selectedApp.icon}</div>
+                  <div className="modal-app-details">
+                    <h2>{selectedApp.name}</h2>
+                    <div className="modal-app-meta">
+                      <span>📱 Versão {selectedApp.version}</span>
+                      <span>📦 {selectedApp.size}</span>
+                      <span>🏷️ {selectedApp.category}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-            
-            <div className="app-modal-content" style={{"--tag-rgb": 
-              selectedApp.category === "Cyber Segurança" ? "39, 174, 96" : 
-              selectedApp.category === "Desenvolvimento de Software" ? "52, 152, 219" : 
-              selectedApp.category === "Inteligência Artificial" ? "155, 89, 182" :
-              selectedApp.category === "Análise de Dados" ? "230, 126, 34" : "65, 88, 208"
-            }}>
-              <div className="app-details">
-                <div className="app-details-section">
-                  <h3>Descrição detalhada</h3>
+              
+              <div className="modal-content">
+                <div className="modal-section">
+                  <h3>Sobre o Aplicativo</h3>
                   <p>{selectedApp.description}</p>
                 </div>
                 
                 {selectedApp.features && selectedApp.features.length > 0 && (
-                  <div className="app-details-section">
+                  <div className="modal-section">
                     <h3>Funcionalidades</h3>
                     <ul className="features-list">
                       {selectedApp.features.map((feature, index) => (
@@ -331,64 +268,73 @@ function Apps() {
                 )}
                 
                 {selectedApp.requirements && (
-                  <div className="app-details-section">
-                    <h3>Requisitos do sistema</h3>
-                    <ul className="requirements-list">
-                      <li>
-                        <div className="requirement-label">Sistema</div>
+                  <div className="modal-section">
+                    <h3>Requisitos do Sistema</h3>
+                    <div className="requirements-grid">
+                      <div className="requirement-item">
+                        <div className="requirement-label">Sistema Operacional</div>
                         <div className="requirement-value">{selectedApp.requirements.os}</div>
-                      </li>
-                      <li>
-                        <div className="requirement-label">Memória</div>
+                      </div>
+                      <div className="requirement-item">
+                        <div className="requirement-label">Memória RAM</div>
                         <div className="requirement-value">{selectedApp.requirements.ram}</div>
-                      </li>
-                      <li>
-                        <div className="requirement-label">Espaço em disco</div>
+                      </div>
+                      <div className="requirement-item">
+                        <div className="requirement-label">Espaço em Disco</div>
                         <div className="requirement-value">{selectedApp.requirements.disk}</div>
-                      </li>
-                    </ul>
+                      </div>
+                      {selectedApp.requirements.other && (
+                        <div className="requirement-item">
+                          <div className="requirement-label">Outros</div>
+                          <div className="requirement-value">{selectedApp.requirements.other}</div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
                 
                 {selectedApp.installation_steps && selectedApp.installation_steps.length > 0 && (
-                  <div className="app-details-section">
-                    <h3>Instruções de instalação</h3>
-                    <ol className="installation-list">
+                  <div className="modal-section">
+                    <h3>Instruções de Instalação</h3>
+                    <ol className="installation-steps">
                       {selectedApp.installation_steps.map((step, index) => (
                         <li key={index}>{step}</li>
                       ))}
                     </ol>
                   </div>
                 )}
-              </div>
-              
-              <div className="download-section">
-                <button 
-                  className="download-button-large"
-                  onClick={() => downloadApp(selectedApp)}
-                >
-                  Baixar {selectedApp.name}
-                </button>
-                <p className="download-note">
-                  <strong>Nota:</strong> Ao clicar no botão acima, o download iniciará automaticamente.
-                  Não é necessário navegar para o GitHub.
-                </p>
+                
+                <div className="download-section">
+                  <button 
+                    className="download-button-large"
+                    onClick={() => downloadApp(selectedApp)}
+                  >
+                    <FaDownload />
+                    Baixar {selectedApp.name}
+                  </button>
+                  <p className="download-note">
+                    Ao clicar no botão acima, o download iniciará automaticamente. 
+                    Certifique-se de que seu sistema atende aos requisitos mínimos.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Notificação de download */}
-      {showNotification && (
-        <div className="notification">
-          <div className="notification-content">
-            <span className="notification-icon">📥</span>
-            <span className="notification-message">{notificationMessage}</span>
+        {/* Notificação */}
+        {showNotification && (
+          <div className="notification">
+            <div className="notification-content">
+              <span className="notification-icon">📥</span>
+              <span className="notification-message">{notificationMessage}</span>
+            </div>
+            <button className="notification-close" onClick={() => setShowNotification(false)}>
+              <FaTimes />
+            </button>
           </div>
-          <button className="notification-close" onClick={() => setShowNotification(false)}>×</button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
