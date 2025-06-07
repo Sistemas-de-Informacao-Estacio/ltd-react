@@ -1,128 +1,108 @@
-import { useState, useEffect } from 'react';
-import { Link, useLocation, Outlet } from 'react-router-dom';
-import { FaHome, FaUsers, FaFileAlt, FaMobileAlt, FaSignOutAlt, FaBars, FaTimes } from 'react-icons/fa';
-import { supabase } from '../../lib/supabase';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
+import { isAdminLoggedIn, adminLogout, getAdminUser } from '../../lib/auth';
+import { FaHome, FaUsers, FaFileAlt, FaMobileAlt, FaNewspaper, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 function AdminLayout() {
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [user, setUser] = useState(null);
     const location = useLocation();
+    const navigate = useNavigate();
+    const [adminUser, setAdminUser] = useState(null);
 
     useEffect(() => {
-        // Verificar se o usuário está autenticado
-        checkUser();
-    }, []);
+        if (!isAdminLoggedIn()) {
+            navigate('/admin/login');
+            return;
+        }
+        
+        setAdminUser(getAdminUser());
+    }, [navigate]);
 
-    const checkUser = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        setUser(user);
+    const handleLogout = () => {
+        if (window.confirm('Tem certeza que deseja sair?')) {
+            adminLogout();
+            navigate('/admin/login');
+        }
     };
 
-    const handleLogout = async () => {
-        await supabase.auth.signOut();
-        window.location.href = '/admin/login';
-    };
-
-    const navigationItems = [
-        { name: 'Dashboard', href: '/admin', icon: FaHome },
-        { name: 'Membros da Equipe', href: '/admin/team', icon: FaUsers },
-        { name: 'Documentos', href: '/admin/documents', icon: FaFileAlt },
-        { name: 'Aplicativos', href: '/admin/apps', icon: FaMobileAlt },
+    const menuItems = [
+        {
+            path: '/admin/dashboard',
+            icon: FaHome,
+            label: 'Dashboard'
+        },
+        {
+            path: '/admin/team',
+            icon: FaUsers,
+            label: 'Equipe'
+        },
+        {
+            path: '/admin/documents',
+            icon: FaFileAlt,
+            label: 'Documentos'
+        },
+        {
+            path: '/admin/apps',
+            icon: FaMobileAlt,
+            label: 'Aplicativos'
+        },
+        {
+            path: '/admin/news',
+            icon: FaNewspaper,
+            label: 'Notícias'
+        }
     ];
 
+    if (!isAdminLoggedIn()) {
+        return null;
+    }
+
     return (
-        <div className="min-h-screen bg-gray-50 flex">
+        <div className="min-h-screen bg-gray-100 flex">
             {/* Sidebar */}
-            <div className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 transition-transform duration-300 ease-in-out w-64 bg-gray-900 fixed lg:static inset-y-0 left-0 z-50`}>
-                <div className="flex items-center justify-between h-16 px-6 bg-gray-800">
-                    <span className="text-white font-bold text-lg">Admin LTD</span>
-                    <button
-                        onClick={() => setSidebarOpen(false)}
-                        className="lg:hidden text-white hover:text-gray-300"
-                    >
-                        <FaTimes size={20} />
-                    </button>
+            <div className="bg-white shadow-lg w-64 min-h-screen">
+                <div className="p-6 border-b border-gray-200">
+                    <h1 className="text-xl font-bold text-gray-800">Admin Panel</h1>
+                    {adminUser && (
+                        <div className="mt-2 flex items-center gap-2">
+                            <FaUser className="text-gray-500 text-sm" />
+                            <span className="text-sm text-gray-600">{adminUser.full_name}</span>
+                        </div>
+                    )}
                 </div>
                 
-                <nav className="mt-8">
-                    {navigationItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = location.pathname === item.href;
-                        
+                <nav className="mt-6">
+                    {menuItems.map((item) => {
+                        const isActive = location.pathname === item.path;
                         return (
                             <Link
-                                key={item.name}
-                                to={item.href}
-                                className={`flex items-center px-6 py-3 text-sm font-medium ${
-                                    isActive
-                                        ? 'bg-gray-800 text-white border-r-4 border-blue-500'
-                                        : 'text-gray-300 hover:bg-gray-800 hover:text-white'
-                                } transition-colors duration-200`}
-                                onClick={() => setSidebarOpen(false)}
+                                key={item.path}
+                                to={item.path}
+                                className={`flex items-center gap-3 px-6 py-3 text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors ${
+                                    isActive ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' : ''
+                                }`}
                             >
-                                <Icon className="mr-3 h-5 w-5" />
-                                {item.name}
+                                <item.icon />
+                                <span>{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
                 
-                <div className="absolute bottom-0 w-full">
+                <div className="absolute bottom-6 left-6 right-6">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center w-full px-6 py-3 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-200"
+                        className="w-full flex items-center gap-3 px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
-                        <FaSignOutAlt className="mr-3 h-5 w-5" />
-                        Sair
+                        <FaSignOutAlt />
+                        <span>Sair</span>
                     </button>
                 </div>
             </div>
 
             {/* Main Content */}
-            <div className="flex-1 lg:ml-0">
-                {/* Top Bar */}
-                <div className="bg-white shadow-sm border-b">
-                    <div className="px-6 py-4">
-                        <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                                <button
-                                    onClick={() => setSidebarOpen(true)}
-                                    className="lg:hidden text-gray-500 hover:text-gray-700 mr-4"
-                                >
-                                    <FaBars size={20} />
-                                </button>
-                                <h1 className="text-2xl font-semibold text-gray-900">
-                                    Painel Administrativo
-                                </h1>
-                            </div>
-                            
-                            {user && (
-                                <div className="flex items-center space-x-4">
-                                    <span className="text-sm text-gray-500">
-                                        Bem-vindo, {user.email}
-                                    </span>
-                                    <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
-                                        {user.email?.charAt(0).toUpperCase()}
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Page Content */}
-                <main className="p-6">
-                    <Outlet />
-                </main>
+            <div className="flex-1 p-8">
+                <Outlet />
             </div>
-
-            {/* Sidebar Overlay */}
-            {sidebarOpen && (
-                <div
-                    className="lg:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
-                    onClick={() => setSidebarOpen(false)}
-                />
-            )}
         </div>
     );
 }
