@@ -18,11 +18,11 @@ function Nav() {
         { name: 'Sobre', path: '/sobre' },
         { name: 'Quem Somos', path: '/quem-somos' },
         { name: 'Apps', path: '/apps' },
-        { name: 'Cyber', path: '/cybersec' },
         { name: 'Tecnologias', path: '/tecnologias' },
         { name: 'Docs', path: '/documentos' },
         { name: 'Contato', path: '/contato' },
-        { name: 'Notícias', path: '/noticias' }
+        { name: 'Notícias', path: '/noticias' },
+        { name: 'Admin', path: '/admin' }
     ];
 
     const isActive = (path) => {

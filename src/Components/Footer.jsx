@@ -102,7 +102,7 @@ function Footer() {
                 { to: "/quem-somos", label: "Quem Somos" },
                 { to: "/apps", label: "Aplicativos" },
                 { to: "/tecnologias", label: "Tecnologias" },
-                { to: "/cybersec", label: "Cibersegurança" },
+                { to: "/admin", label: "Admin" },
                 { to: "/documentos", label: "Documentos" },
                 { to: "/noticias", label: "Notícias" },
                 { to: "/contato", label: "Contato" }
