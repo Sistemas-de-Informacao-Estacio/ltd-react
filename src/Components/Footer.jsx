@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCity } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { FaGithub, FaInstagram, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin, FaRocket, FaShieldAlt, FaBrain, FaCode } from 'react-icons/fa';
 
@@ -22,14 +20,25 @@ function Footer() {
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-6 hover:opacity-80 transition-opacity group">
               <div className="relative">
-                <FontAwesomeIcon icon={faCity} className="text-3xl text-blue-400 group-hover:scale-110 transition-transform" />
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <img 
+                  src="/estacio.jpeg" 
+                  alt="Estácio Logo" 
+                  className="w-12 h-12 rounded-xl object-cover border-2 border-blue-400 shadow-lg group-hover:scale-110 transition-transform"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
+                />
+                <div className="w-12 h-12 bg-blue-400 rounded-xl flex items-center justify-center text-white font-bold text-lg hidden">
+                  LTD
+                </div>
+                <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
               </div>
               <div>
                 <span className="text-3xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent">
                   TechPrefeitura
                 </span>
-                <p className="text-sm text-gray-400 -mt-1">Laboratório de Transformação Digital</p>
+                <p className="text-sm text-gray-400 -mt-1">Laboratório de Transformação Digital • Estácio</p>
               </div>
             </Link>
             
@@ -207,9 +216,10 @@ function Footer() {
           {/* Badge de Tecnologia */}
           <div className="mt-6 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-full border border-blue-500/30">
+              <img src="/estacio.jpeg" alt="Estácio" className="w-4 h-4 rounded-full" />
               <span className="text-xs text-gray-300">Powered by</span>
               <span className="text-xs font-semibold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
-                React • Supabase • TailwindCSS
+                Estácio • React • Supabase • TailwindCSS
               </span>
             </div>
           </div>

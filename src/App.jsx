@@ -12,6 +12,7 @@ import About from './Components/About';
 import Technologies from './Components/Technologies';
 import CyberSec from './Components/CyberSec';
 import CookieBanner from './Components/CookieBanner';
+import InstallPWA from './Components/InstallPWA';
 
 // Admin Components
 import AdminLogin from './Components/Admin/AdminLogin';
@@ -57,6 +58,7 @@ function App() {
               </main>
               <Footer />
               <CookieBanner />
+              <InstallPWA />
             </>
           } />
         </Routes>

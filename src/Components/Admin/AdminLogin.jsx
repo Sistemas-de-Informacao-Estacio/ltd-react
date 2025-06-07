@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminLogin, testDatabaseConnection } from '../../lib/auth';
-import { supabase } from '../../lib/supabase';
 import { FaUser, FaLock, FaEye, FaEyeSlash, FaDatabase } from 'react-icons/fa';
 
 function AdminLogin() {
@@ -12,35 +11,16 @@ function AdminLogin() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [availableUsers, setAvailableUsers] = useState([]);
     const [dbConnected, setDbConnected] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         checkDatabaseConnection();
-        loadAvailableUsers();
     }, []);
 
     const checkDatabaseConnection = async () => {
         const connected = await testDatabaseConnection();
         setDbConnected(connected);
-    };
-
-    const loadAvailableUsers = async () => {
-        try {
-            const { data, error } = await supabase
-                .from('admin_users')
-                .select('username, email, full_name');
-            
-            if (!error && data) {
-                setAvailableUsers(data);
-                console.log('Usuários disponíveis carregados:', data);
-            } else {
-                console.error('Erro ao carregar usuários:', error);
-            }
-        } catch (error) {
-            console.error('Erro ao carregar usuários:', error);
-        }
     };
 
     const handleSubmit = async (e) => {
@@ -61,30 +41,41 @@ function AdminLogin() {
         }
     };
 
-    const fillCredentials = (username, password) => {
-        setCredentials({ username, password });
-    };
-
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-900 via-blue-800 to-purple-900 flex items-center justify-center p-4">
             <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md">
                 <div className="text-center mb-8">
-                    <div className="mx-auto bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mb-4">
-                        <FaUser className="text-blue-600 text-2xl" />
+                    <div className="mx-auto bg-blue-100 w-20 h-20 rounded-full flex items-center justify-center mb-4 border-4 border-blue-200">
+                        <img 
+                            src="/estacio.jpeg" 
+                            alt="Estácio Logo" 
+                            className="w-16 h-16 rounded-full object-cover"
+                            onError={(e) => {
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                            }}
+                        />
+                        <div className="w-16 h-16 bg-blue-600 rounded-full items-center justify-center text-white text-2xl font-bold hidden">
+                            <FaUser />
+                        </div>
                     </div>
                     <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
-                    <p className="text-gray-600 mt-2">Acesse o painel administrativo</p>
+                    <p className="text-gray-600 mt-2">Laboratório de Transformação Digital</p>
+                    <p className="text-blue-600 text-sm font-medium mt-1">Estácio Florianópolis</p>
                     
                     {/* Status da conexão */}
-                    <div className={`mt-2 text-sm ${dbConnected ? 'text-green-600' : 'text-red-600'}`}>
-                        <FaDatabase className="inline mr-1" />
-                        {dbConnected ? 'Conectado ao banco' : 'Erro na conexão'}
+                    <div className={`mt-3 text-sm flex items-center justify-center gap-2 ${dbConnected ? 'text-green-600' : 'text-red-600'}`}>
+                        <FaDatabase className="text-lg" />
+                        <span className="font-medium">
+                            {dbConnected ? 'Sistema Conectado' : 'Erro na Conexão'}
+                        </span>
                     </div>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6">
-                        {error}
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-center">
+                        <div className="font-medium">Erro de Autenticação</div>
+                        <div className="text-sm mt-1">{error}</div>
                     </div>
                 )}
 
@@ -138,44 +129,34 @@ function AdminLogin() {
 
                     <button
                         type="submit"
-                        disabled={loading}
+                        disabled={loading || !dbConnected}
                         className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {loading ? 'Entrando...' : 'Entrar'}
+                        {loading ? 'Entrando...' : 'Entrar no Sistema'}
                     </button>
                 </form>
 
-                {/* Debug: Usuários disponíveis */}
-                {availableUsers.length > 0 && (
-                    <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-                        <h3 className="font-semibold text-gray-700 mb-2">Usuários disponíveis:</h3>
-                        <div className="space-y-2">
-                            {availableUsers.map((user, index) => (
-                                <div key={index} className="text-sm">
-                                    <button
-                                        type="button"
-                                        onClick={() => fillCredentials(user.username, user.username === 'admin' ? 'admin123' : 'Vagnercordeiro@2022')}
-                                        className="text-left w-full p-2 hover:bg-blue-50 rounded border text-blue-600 hover:text-blue-800"
-                                    >
-                                        <strong>Usuário:</strong> {user.username}<br />
-                                        <strong>Nome:</strong> {user.full_name}<br />
-                                        <strong>Email:</strong> {user.email}
-                                        <div className="text-xs text-gray-500 mt-1">Clique para preencher automaticamente</div>
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
+                {!dbConnected && (
+                    <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <h3 className="font-semibold text-yellow-800 mb-2">Sistema Indisponível</h3>
+                        <p className="text-sm text-yellow-700">
+                            Não foi possível conectar ao banco de dados. Verifique sua conexão com a internet ou tente novamente mais tarde.
+                        </p>
+                        <button
+                            onClick={checkDatabaseConnection}
+                            className="mt-2 text-sm bg-yellow-200 hover:bg-yellow-300 text-yellow-800 px-3 py-1 rounded transition-colors"
+                        >
+                            Tentar Novamente
+                        </button>
                     </div>
                 )}
 
-                {availableUsers.length === 0 && dbConnected && (
-                    <div className="mt-6 p-4 bg-yellow-50 rounded-lg">
-                        <h3 className="font-semibold text-yellow-700 mb-2">Nenhum usuário encontrado!</h3>
-                        <p className="text-sm text-yellow-600">
-                            Execute o script SQL fornecido para criar os usuários admin.
-                        </p>
-                    </div>
-                )}
+                <div className="mt-6 text-center">
+                    <p className="text-xs text-gray-500">
+                        © 2025 Laboratório de Transformação Digital<br />
+                        Estácio Florianópolis - Todos os direitos reservados
+                    </p>
+                </div>
             </div>
         </div>
     );

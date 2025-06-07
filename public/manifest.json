@@ -1,0 +1,69 @@
+{
+  "name": "Laboratório de Transformação Digital - Estácio",
+  "short_name": "LTD Estácio",
+  "description": "Soluções inovadoras em IA, Cibersegurança e Desenvolvimento para o setor público",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a202c",
+  "theme_color": "#4158d0",
+  "orientation": "portrait-primary",
+  "categories": ["education", "productivity", "technology"],
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "/estacio.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/estacio.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/estacio.jpeg",
+      "sizes": "144x144",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/estacio.jpeg",
+      "sizes": "96x96",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/estacio.jpeg",
+      "sizes": "1280x720",
+      "type": "image/jpeg",
+      "platform": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Aplicativos",
+      "short_name": "Apps",
+      "description": "Ver aplicativos desenvolvidos",
+      "url": "/apps",
+      "icons": [{ "src": "/estacio.jpeg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Documentos",
+      "short_name": "Docs",
+      "description": "Biblioteca de documentos",
+      "url": "/documentos",
+      "icons": [{ "src": "/estacio.jpeg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Equipe",
+      "short_name": "Team",
+      "description": "Conheça nossa equipe",
+      "url": "/quem-somos",
+      "icons": [{ "src": "/estacio.jpeg", "sizes": "96x96" }]
+    }
+  ]
+}

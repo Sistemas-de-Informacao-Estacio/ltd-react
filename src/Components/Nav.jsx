@@ -1,5 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCity } from '@fortawesome/free-solid-svg-icons';
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { FaRegTimesCircle } from "react-icons/fa";
@@ -20,9 +18,9 @@ function Nav() {
         { name: 'Apps', path: '/apps' },
         { name: 'Tecnologias', path: '/tecnologias' },
         { name: 'Docs', path: '/documentos' },
+        { name: 'Contato', path: '/contato' },
         { name: 'Notícias', path: '/noticias' },
-        { name: 'Admin', path: '/admin' },
-        { name: 'Contato', path: '/contato' }
+        { name: 'Admin', path: '/admin' }
     ];
 
     const isActive = (path) => {
@@ -35,10 +33,29 @@ function Nav() {
         <nav className="bg-gray-800 fixed top-0 left-0 w-full px-6 py-4 z-50 shadow-md">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
                 <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                    <FontAwesomeIcon icon={faCity} className="text-2xl text-blue-400" />
-                    <span className="text-2xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent">
-                        TechPrefeitura
-                    </span>
+                    <div className="relative">
+                        <img 
+                            src="/estacio.jpeg" 
+                            alt="Estácio Logo" 
+                            className="w-10 h-10 rounded-lg object-cover border-2 border-blue-400 shadow-lg"
+                            onError={(e) => {
+                                // Fallback caso a imagem não carregue
+                                e.target.style.display = 'none';
+                                e.target.nextSibling.style.display = 'flex';
+                            }}
+                        />
+                        <div className="w-10 h-10 bg-blue-400 rounded-lg flex items-center justify-center text-white font-bold text-lg hidden">
+                            LTD
+                        </div>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-xl font-bold bg-gradient-to-r from-blue-300 to-blue-500 bg-clip-text text-transparent">
+                            TechPrefeitura
+                        </span>
+                        <span className="text-xs text-gray-400 -mt-1">
+                            Estácio • LTD
+                        </span>
+                    </div>
                 </Link>
 
                 <button

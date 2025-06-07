@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Favicon e ícones -->
+    <link rel="icon" type="image/jpeg" href="/estacio.jpeg" />
+    <link rel="apple-touch-icon" href="/estacio.jpeg" />
+    <link rel="shortcut icon" href="/estacio.jpeg" />
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="/manifest.json" />
+    
+    <!-- SEO Meta Tags -->
+    <title>LTD - Laboratório de Transformação Digital | Estácio Florianópolis</title>
+    <meta name="description" content="Laboratório de Transformação Digital da Estácio em parceria com as prefeituras de São José e Florianópolis. Desenvolvemos soluções inovadoras em IA, Cibersegurança, Machine Learning e Desenvolvimento Full-Stack para modernizar o setor público." />
+    <meta name="keywords" content="transformação digital, inteligência artificial, cibersegurança, machine learning, desenvolvimento, estácio, florianópolis, são josé, setor público, inovação tecnológica" />
+    <meta name="author" content="Laboratório de Transformação Digital - Estácio" />
+    <meta name="robots" content="index, follow" />
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://ltdestacio.com.br/" />
+    <meta property="og:title" content="LTD - Laboratório de Transformação Digital | Estácio" />
+    <meta property="og:description" content="Transformando o setor público através de tecnologias inovadoras em IA, Cibersegurança e Desenvolvimento. Uma parceria Estácio com prefeituras de SC." />
+    <meta property="og:image" content="/estacio.jpeg" />
+    <meta property="og:locale" content="pt_BR" />
+    <meta property="og:site_name" content="LTD Estácio" />
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://ltdestacio.com.br/" />
+    <meta property="twitter:title" content="LTD - Laboratório de Transformação Digital" />
+    <meta property="twitter:description" content="Inovação tecnológica para o setor público - IA, Cibersegurança e Desenvolvimento" />
+    <meta property="twitter:image" content="/estacio.jpeg" />
+    
+    <!-- Tema PWA -->
+    <meta name="theme-color" content="#4158d0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="LTD Estácio" />
+    
+    <!-- Preconnect para performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Schema.org para SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Laboratório de Transformação Digital - Estácio",
+      "alternateName": "LTD Estácio",
+      "url": "https://ltdestacio.com.br/",
+      "logo": "/estacio.jpeg",
+      "description": "Laboratório de Transformação Digital focado em desenvolver soluções inovadoras para o setor público",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Rua Coronel Pedro Demoro, 2447",
+        "addressLocality": "Florianópolis",
+        "addressRegion": "SC",
+        "addressCountry": "BR"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+55-48-3271-3900",
+        "contactType": "customer service"
+      },
+      "sameAs": [
+        "https://github.com/LTD-2025-1-Cyber-Security-Project",
+        "https://www.instagram.com/estacio.florianopolis/"
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((registration) => {
+              console.log('SW registered: ', registration);
+            })
+            .catch((registrationError) => {
+              console.log('SW registration failed: ', registrationError);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
