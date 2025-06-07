@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './Components/Navbar';
+import Nav from './Components/Nav';
 import Home from './Components/Home';
 import WeAre from './Components/WeAre';
 import Apps from './Components/Apps';
@@ -8,6 +8,10 @@ import Documents from './Components/Documents';
 import News from './Components/News';
 import Contact from './Components/Contact';
 import Footer from './Components/Footer';
+import About from './Components/About';
+import Technologies from './Components/Technologies';
+import CyberSec from './Components/CyberSec';
+import CookieBanner from './Components/CookieBanner';
 
 // Admin Components
 import AdminLogin from './Components/Admin/AdminLogin';
@@ -21,7 +25,7 @@ import NewsManagement from './Components/Admin/NewsManagement';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="App bg-gray-900 min-h-screen">
         <Routes>
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -36,17 +40,23 @@ function App() {
           {/* Public Routes */}
           <Route path="/*" element={
             <>
-              <Navbar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/we-are" element={<WeAre />} />
-                <Route path="/apps" element={<Apps />} />
-                <Route path="/documents" element={<Documents />} />
-                <Route path="/news" element={<News />} />
-                <Route path="/contact" element={<Contact />} />
-              </Routes>
+              <Nav />
+              <main className="pt-20">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/sobre" element={<About />} />
+                  <Route path="/quem-somos" element={<WeAre />} />
+                  <Route path="/apps" element={<Apps />} />
+                  <Route path="/tecnologias" element={<Technologies />} />
+                  <Route path="/cybersec" element={<CyberSec />} />
+                  <Route path="/documentos" element={<Documents />} />
+                  <Route path="/noticias" element={<News />} />
+                  <Route path="/contato" element={<Contact />} />
+                </Routes>
+              </main>
               <Footer />
+              <CookieBanner />
             </>
           } />
         </Routes>
