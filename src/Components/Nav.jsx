@@ -20,9 +20,9 @@ function Nav() {
         { name: 'Apps', path: '/apps' },
         { name: 'Tecnologias', path: '/tecnologias' },
         { name: 'Docs', path: '/documentos' },
-        { name: 'Contato', path: '/contato' },
         { name: 'Notícias', path: '/noticias' },
-        { name: 'Admin', path: '/admin' }
+        { name: 'Admin', path: '/admin' },
+        { name: 'Contato', path: '/contato' }
     ];
 
     const isActive = (path) => {
