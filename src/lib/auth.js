@@ -12,8 +12,15 @@ export const adminLogin = async (username, password) => {
       .eq('username', username)
       .single();
 
-    if (error || !user) {
-      console.error('Usuário não encontrado:', error);
+    if (error) {
+      console.error('Erro ao buscar usuário:', error);
+      if (error.code === 'PGRST116') {
+        throw new Error('Usuário não encontrado');
+      }
+      throw new Error('Erro de conexão com o banco de dados');
+    }
+
+    if (!user) {
       throw new Error('Usuário não encontrado');
     }
 
@@ -25,10 +32,15 @@ export const adminLogin = async (username, password) => {
     }
 
     // Atualizar último login
-    await supabase
-      .from('admin_users')
-      .update({ last_login: new Date().toISOString() })
-      .eq('id', user.id);
+    try {
+      await supabase
+        .from('admin_users')
+        .update({ last_login: new Date().toISOString() })
+        .eq('id', user.id);
+    } catch (updateError) {
+      console.warn('Não foi possível atualizar último login:', updateError);
+      // Não falhar o login por causa disso
+    }
 
     // Armazenar dados do usuário no localStorage
     const userData = {
@@ -41,9 +53,6 @@ export const adminLogin = async (username, password) => {
     };
 
     localStorage.setItem('adminUser', JSON.stringify(userData));
-    
-    // Definir sessão no Supabase para RLS
-    await supabase.auth.signInAnonymously();
     
     return userData;
 
@@ -86,26 +95,65 @@ export const getAdminUser = () => {
 // Função para fazer logout
 export const adminLogout = async () => {
   localStorage.removeItem('adminUser');
-  await supabase.auth.signOut();
+  try {
+    await supabase.auth.signOut();
+  } catch (error) {
+    console.warn('Erro ao fazer logout do Supabase:', error);
+  }
 };
 
-// Função de debug para testar conexão com o banco
+// Função de debug para testar conexão com o banco - CORRIGIDA
 export const testDatabaseConnection = async () => {
   try {
+    console.log('Testando conexão com o banco de dados...');
+    
+    // Tentar fazer uma consulta simples para testar a conectividade
     // eslint-disable-next-line no-unused-vars
     const { data, error } = await supabase
       .from('admin_users')
-      .select('count(*)')
-      .single();
+      .select('id')
+      .limit(1);
     
     if (error) {
       console.error('Erro na conexão:', error);
+      console.error('Detalhes do erro:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint
+      });
       return false;
     }
     
+    console.log('Conexão com banco estabelecida com sucesso');
     return true;
   } catch (error) {
     console.error('Erro na conexão:', error);
     return false;
   }
+};
+
+// Função para verificar se as tabelas existem
+export const checkTablesExist = async () => {
+  const tables = ['admin_users', 'team_members', 'documents', 'applications', 'news'];
+  const results = {};
+  
+  for (const table of tables) {
+    try {
+      const { error } = await supabase
+        .from(table)
+        .select('id')
+        .limit(1);
+      
+      results[table] = !error;
+      if (error) {
+        console.error(`Erro na tabela ${table}:`, error);
+      }
+    } catch (err) {
+      results[table] = false;
+      console.error(`Erro ao verificar tabela ${table}:`, err);
+    }
+  }
+  
+  return results;
 };

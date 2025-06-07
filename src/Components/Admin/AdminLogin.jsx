@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminLogin, testDatabaseConnection } from '../../lib/auth';
-import { FaUser, FaLock, FaEye, FaEyeSlash, FaDatabase } from 'react-icons/fa';
+import { adminLogin, testDatabaseConnection, checkTablesExist } from '../../lib/auth';
+import { FaUser, FaLock, FaEye, FaEyeSlash, FaDatabase, FaExclamationTriangle, FaCheckCircle } from 'react-icons/fa';
 
 function AdminLogin() {
     const [credentials, setCredentials] = useState({
@@ -11,7 +11,11 @@ function AdminLogin() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showPassword, setShowPassword] = useState(false);
-    const [dbConnected, setDbConnected] = useState(false);
+    const [dbStatus, setDbStatus] = useState({
+        connected: false,
+        checking: true,
+        tables: {}
+    });
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -19,26 +23,88 @@ function AdminLogin() {
     }, []);
 
     const checkDatabaseConnection = async () => {
-        const connected = await testDatabaseConnection();
-        setDbConnected(connected);
+        setDbStatus(prev => ({ ...prev, checking: true }));
+        
+        try {
+            console.log('Verificando conexão com o banco...');
+            const connected = await testDatabaseConnection();
+            
+            let tables = {};
+            if (connected) {
+                console.log('Verificando tabelas...');
+                tables = await checkTablesExist();
+            }
+            
+            setDbStatus({
+                connected,
+                checking: false,
+                tables
+            });
+            
+            if (connected) {
+                console.log('Banco conectado com sucesso');
+            } else {
+                console.log('Falha na conexão com o banco');
+            }
+        } catch (error) {
+            console.error('Erro ao verificar conexão:', error);
+            setDbStatus({
+                connected: false,
+                checking: false,
+                tables: {}
+            });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        if (!dbStatus.connected) {
+            setError('Sistema indisponível. Verifique a conexão com o banco de dados.');
+            return;
+        }
+        
         setLoading(true);
         setError('');
 
         try {
-            console.log('Iniciando login...');
-            await adminLogin(credentials.username, credentials.password);
-            console.log('Login realizado com sucesso!');
+            console.log('Iniciando processo de login...');
+            const user = await adminLogin(credentials.username, credentials.password);
+            console.log('Login realizado com sucesso:', user);
             navigate('/admin/dashboard');
         } catch (error) {
             console.error('Erro no login:', error);
-            setError(error.message || 'Erro ao fazer login');
+            
+            // Tratar diferentes tipos de erro
+            if (error.message.includes('Usuário não encontrado')) {
+                setError('Usuário não encontrado. Verifique o nome de usuário.');
+            } else if (error.message.includes('Senha incorreta')) {
+                setError('Senha incorreta. Verifique sua senha.');
+            } else if (error.message.includes('conexão')) {
+                setError('Erro de conexão com o banco de dados. Tente novamente.');
+            } else {
+                setError(error.message || 'Erro inesperado. Tente novamente.');
+            }
         } finally {
             setLoading(false);
         }
+    };
+
+    const getConnectionStatusColor = () => {
+        if (dbStatus.checking) return 'text-yellow-600';
+        return dbStatus.connected ? 'text-green-600' : 'text-red-600';
+    };
+
+    const getConnectionStatusText = () => {
+        if (dbStatus.checking) return 'Verificando Conexão...';
+        return dbStatus.connected ? 'Sistema Conectado' : 'Erro na Conexão';
+    };
+
+    const getConnectionIcon = () => {
+        if (dbStatus.checking) return <FaDatabase className="text-lg animate-pulse" />;
+        return dbStatus.connected ? 
+            <FaCheckCircle className="text-lg" /> : 
+            <FaExclamationTriangle className="text-lg" />;
     };
 
     return (
@@ -64,13 +130,47 @@ function AdminLogin() {
                     <p className="text-blue-600 text-sm font-medium mt-1">Estácio Florianópolis</p>
                     
                     {/* Status da conexão */}
-                    <div className={`mt-3 text-sm flex items-center justify-center gap-2 ${dbConnected ? 'text-green-600' : 'text-red-600'}`}>
-                        <FaDatabase className="text-lg" />
+                    <div className={`mt-3 text-sm flex items-center justify-center gap-2 ${getConnectionStatusColor()}`}>
+                        {getConnectionIcon()}
                         <span className="font-medium">
-                            {dbConnected ? 'Sistema Conectado' : 'Erro na Conexão'}
+                            {getConnectionStatusText()}
                         </span>
                     </div>
                 </div>
+
+                {/* Diagnóstico detalhado */}
+                {!dbStatus.checking && !dbStatus.connected && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <h3 className="font-semibold text-red-800 mb-2">Diagnóstico do Sistema</h3>
+                        <div className="text-sm text-red-700 space-y-1">
+                            <div>• Conexão com Supabase: ❌ Falhou</div>
+                            <div>• URL: ezsjmevzlvhofdtbbwdn.supabase.co</div>
+                            <div>• Status: Erro 400 (Bad Request)</div>
+                        </div>
+                        <button
+                            onClick={checkDatabaseConnection}
+                            className="mt-2 text-sm bg-red-200 hover:bg-red-300 text-red-800 px-3 py-1 rounded transition-colors"
+                            disabled={dbStatus.checking}
+                        >
+                            {dbStatus.checking ? 'Verificando...' : 'Tentar Novamente'}
+                        </button>
+                    </div>
+                )}
+
+                {/* Status das tabelas quando conectado */}
+                {dbStatus.connected && Object.keys(dbStatus.tables).length > 0 && (
+                    <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+                        <h3 className="font-semibold text-green-800 mb-2">Status das Tabelas</h3>
+                        <div className="text-sm text-green-700 grid grid-cols-2 gap-1">
+                            {Object.entries(dbStatus.tables).map(([table, exists]) => (
+                                <div key={table} className="flex items-center gap-1">
+                                    <span>{exists ? '✅' : '❌'}</span>
+                                    <span>{table}</span>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {error && (
                     <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-6 text-center">
@@ -96,6 +196,7 @@ function AdminLogin() {
                                 })}
                                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Digite seu usuário"
+                                disabled={!dbStatus.connected}
                             />
                         </div>
                     </div>
@@ -116,11 +217,13 @@ function AdminLogin() {
                                 })}
                                 className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 placeholder="Digite sua senha"
+                                disabled={!dbStatus.connected}
                             />
                             <button
                                 type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                disabled={!dbStatus.connected}
                             >
                                 {showPassword ? <FaEyeSlash /> : <FaEye />}
                             </button>
@@ -129,27 +232,23 @@ function AdminLogin() {
 
                     <button
                         type="submit"
-                        disabled={loading || !dbConnected}
+                        disabled={loading || !dbStatus.connected}
                         className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-200 font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         {loading ? 'Entrando...' : 'Entrar no Sistema'}
                     </button>
                 </form>
 
-                {!dbConnected && (
-                    <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                        <h3 className="font-semibold text-yellow-800 mb-2">Sistema Indisponível</h3>
-                        <p className="text-sm text-yellow-700">
-                            Não foi possível conectar ao banco de dados. Verifique sua conexão com a internet ou tente novamente mais tarde.
-                        </p>
-                        <button
-                            onClick={checkDatabaseConnection}
-                            className="mt-2 text-sm bg-yellow-200 hover:bg-yellow-300 text-yellow-800 px-3 py-1 rounded transition-colors"
-                        >
-                            Tentar Novamente
-                        </button>
+                {/* Informações de login para desenvolvimento */}
+                {/* {dbStatus.connected && (
+                    <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <h3 className="font-semibold text-blue-800 mb-2">Usuários de Teste</h3>
+                        <div className="text-sm text-blue-700 space-y-1">
+                            <div>👤 <strong>admin</strong> / admin123</div>
+                            <div>👤 <strong>editor</strong> / editor123</div>
+                        </div>
                     </div>
-                )}
+                )} */}
 
                 <div className="mt-6 text-center">
                     <p className="text-xs text-gray-500">
