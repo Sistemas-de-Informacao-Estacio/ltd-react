@@ -47,9 +47,10 @@ CREATE TABLE applications (
 -- Tabela de usuários admin
 CREATE TABLE admin_users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  email VARCHAR(255) UNIQUE NOT NULL,
+  username VARCHAR(50) UNIQUE NOT NULL,
   password_hash VARCHAR(255) NOT NULL,
-  name VARCHAR(255) NOT NULL,
+  full_name VARCHAR(100),
+  email VARCHAR(100),
   role VARCHAR(50) DEFAULT 'admin',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   last_login TIMESTAMP WITH TIME ZONE
@@ -71,28 +72,31 @@ CREATE TABLE news (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Criar tabela de admin users (sem registro público)
-CREATE TABLE admin_users (
-    id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(50) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    full_name VARCHAR(100),
-    email VARCHAR(100),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
 -- Inserir usuário admin padrão (senha: admin123)
 INSERT INTO admin_users (username, password_hash, full_name, email) VALUES 
-('admin', '$2b$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Administrador', 'admin@empresa.com');
+('admin', 'admin123', 'Administrador', 'admin@empresa.com');
 
--- Políticas RLS para news
+-- Habilitar RLS (Row Level Security)
+ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
+ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE news ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Enable read access for all users" ON news
-FOR SELECT USING (published = true);
+-- Políticas para team_members
+CREATE POLICY "Allow public read access" ON team_members FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated users all access" ON team_members FOR ALL USING (true);
 
-CREATE POLICY "Enable all for authenticated users" ON news
-FOR ALL USING (true);
+-- Políticas para documents
+CREATE POLICY "Allow public read access" ON documents FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated users all access" ON documents FOR ALL USING (true);
+
+-- Políticas para applications
+CREATE POLICY "Allow public read access" ON applications FOR SELECT USING (true);
+CREATE POLICY "Allow authenticated users all access" ON applications FOR ALL USING (true);
+
+-- Políticas para news
+CREATE POLICY "Enable read access for published news" ON news FOR SELECT USING (published = true);
+CREATE POLICY "Enable all for authenticated users" ON news FOR ALL USING (true);
 
 -- Inserir algumas notícias de exemplo
 INSERT INTO news (title, content, excerpt, category, featured, tags) VALUES 
@@ -109,14 +113,3 @@ INSERT INTO team_members (name, role, description, photo_url, linkedin_url, gith
 ('Lucia Fernandes', 'UX/UI Designer', 'Designer focada em experiência do usuário para o setor público. Cria interfaces intuitivas e acessíveis que facilitam a interação dos cidadãos com os serviços digitais.', '/team/lucia-fernandes.jpg', 'https://linkedin.com/in/lucia-fernandes', 'https://github.com/lucia-fernandes', 'https://instagram.com/lucia.design', 5),
 ('Rafael Almeida', 'Mobile Developer', 'Desenvolvedor especializado em aplicações móveis nativas e híbridas. Responsável pela criação de apps que levam os serviços públicos para os smartphones dos cidadãos.', '/team/rafael-almeida.jpg', 'https://linkedin.com/in/rafael-almeida', 'https://github.com/rafael-almeida', 'https://instagram.com/rafael.mobile', 6),
 ('Camila Rodrigues', 'Product Manager', 'Gerente de produtos com foco em soluções governamentais. Coordena o desenvolvimento de features e garante que as necessidades dos usuários finais sejam atendidas.', '/team/camila-rodrigues.jpg', 'https://linkedin.com/in/camila-rodrigues', 'https://github.com/camila-rodrigues', 'https://instagram.com/camila.pm', 7);
-
--- Habilitar RLS (Row Level Security)
-ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
-ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE admin_users ENABLE ROW LEVEL SECURITY;
-
--- Políticas de segurança (permitir leitura pública, escrita apenas para admins)
-CREATE POLICY "Allow public read access" ON team_members FOR SELECT USING (true);
-CREATE POLICY "Allow public read access" ON documents FOR SELECT USING (true);
-CREATE POLICY "Allow public read access" ON applications FOR SELECT USING (true);

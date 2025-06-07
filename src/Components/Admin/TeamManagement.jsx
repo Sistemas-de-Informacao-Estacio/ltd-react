@@ -8,17 +8,17 @@ function TeamManagement() {
     const [editingMember, setEditingMember] = useState(null);
     const [showAddForm, setShowAddForm] = useState(false);
     const [uploading, setUploading] = useState(false);
+    const [error, setError] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         role: '',
-        bio: '',
+        description: '',
         photo_url: '',
-        linkedin: '',
-        github: '',
-        email: '',
-        specialties: []
+        linkedin_url: '',
+        github_url: '',
+        instagram_url: '',
+        order_position: 0
     });
-    const [specialtyInput, setSpecialtyInput] = useState('');
 
     useEffect(() => {
         fetchMembers();
@@ -26,15 +26,17 @@ function TeamManagement() {
 
     const fetchMembers = async () => {
         try {
+            setError(null);
             const { data, error } = await supabase
                 .from('team_members')
                 .select('*')
-                .order('created_at', { ascending: false });
+                .order('order_position', { ascending: true });
 
             if (error) throw error;
             setMembers(data || []);
         } catch (error) {
             console.error('Erro ao buscar membros:', error);
+            setError('Erro ao carregar membros da equipe');
         } finally {
             setLoading(false);
         }
@@ -81,33 +83,39 @@ function TeamManagement() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
+        setError(null);
 
         try {
-            const memberData = {
-                ...formData,
-                specialties: formData.specialties.length > 0 ? formData.specialties : null
-            };
-
             if (editingMember) {
                 const { error } = await supabase
                     .from('team_members')
-                    .update(memberData)
+                    .update({
+                        ...formData,
+                        updated_at: new Date().toISOString()
+                    })
                     .eq('id', editingMember.id);
 
                 if (error) throw error;
             } else {
+                // Definir order_position automaticamente
+                const maxOrder = members.length > 0 ? Math.max(...members.map(m => m.order_position || 0)) : 0;
+                
                 const { error } = await supabase
                     .from('team_members')
-                    .insert([memberData]);
+                    .insert([{
+                        ...formData,
+                        order_position: maxOrder + 1
+                    }]);
 
                 if (error) throw error;
             }
 
             handleCancelEdit();
-            fetchMembers();
+            await fetchMembers();
+            alert(editingMember ? 'Membro atualizado com sucesso!' : 'Membro adicionado com sucesso!');
         } catch (error) {
             console.error('Erro ao salvar membro:', error);
-            alert('Erro ao salvar membro da equipe');
+            setError('Erro ao salvar membro da equipe: ' + error.message);
         } finally {
             setLoading(false);
         }
@@ -115,33 +123,46 @@ function TeamManagement() {
 
     const handleEdit = (member) => {
         setFormData({
-            name: member.name,
-            role: member.role,
-            bio: member.bio || '',
+            name: member.name || '',
+            role: member.role || '',
+            description: member.description || '',
             photo_url: member.photo_url || '',
-            linkedin: member.linkedin || '',
-            github: member.github || '',
-            email: member.email || '',
-            specialties: member.specialties || []
+            linkedin_url: member.linkedin_url || '',
+            github_url: member.github_url || '',
+            instagram_url: member.instagram_url || '',
+            order_position: member.order_position || 0
         });
         setEditingMember(member);
         setShowAddForm(true);
     };
 
     const handleDelete = async (id) => {
-        if (window.confirm('Tem certeza que deseja excluir este membro da equipe?')) {
-            try {
-                const { error } = await supabase
-                    .from('team_members')
-                    .delete()
-                    .eq('id', id);
+        if (!window.confirm('Tem certeza que deseja excluir este membro da equipe?')) {
+            return;
+        }
 
-                if (error) throw error;
-                fetchMembers();
-            } catch (error) {
-                console.error('Erro ao excluir membro:', error);
-                alert('Erro ao excluir membro da equipe');
+        try {
+            setError(null);
+            setLoading(true);
+
+            const { error } = await supabase
+                .from('team_members')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                console.error('Erro do Supabase:', error);
+                throw error;
             }
+
+            await fetchMembers();
+            alert('Membro removido com sucesso!');
+        } catch (error) {
+            console.error('Erro ao excluir membro:', error);
+            setError('Erro ao excluir membro: ' + error.message);
+            alert('Erro ao excluir membro. Verifique as permissões.');
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -149,33 +170,16 @@ function TeamManagement() {
         setFormData({
             name: '',
             role: '',
-            bio: '',
+            description: '',
             photo_url: '',
-            linkedin: '',
-            github: '',
-            email: '',
-            specialties: []
+            linkedin_url: '',
+            github_url: '',
+            instagram_url: '',
+            order_position: 0
         });
         setEditingMember(null);
         setShowAddForm(false);
-        setSpecialtyInput('');
-    };
-
-    const addSpecialty = () => {
-        if (specialtyInput.trim() && !formData.specialties.includes(specialtyInput.trim())) {
-            setFormData({
-                ...formData,
-                specialties: [...formData.specialties, specialtyInput.trim()]
-            });
-            setSpecialtyInput('');
-        }
-    };
-
-    const removeSpecialty = (specialtyToRemove) => {
-        setFormData({
-            ...formData,
-            specialties: formData.specialties.filter(spec => spec !== specialtyToRemove)
-        });
+        setError(null);
     };
 
     if (loading && members.length === 0) {
@@ -193,11 +197,19 @@ function TeamManagement() {
                 <button
                     onClick={() => setShowAddForm(true)}
                     className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition-colors"
+                    disabled={loading}
                 >
                     <FaPlus />
                     Adicionar Membro
                 </button>
             </div>
+
+            {/* Exibir erro se houver */}
+            {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    {error}
+                </div>
+            )}
 
             {/* Formulário */}
             {showAddForm && (
@@ -246,14 +258,40 @@ function TeamManagement() {
 
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Email
+                                    LinkedIn
                                 </label>
                                 <input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                    type="url"
+                                    value={formData.linkedin_url}
+                                    onChange={(e) => setFormData({ ...formData, linkedin_url: e.target.value })}
                                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-                                    placeholder="email@exemplo.com"
+                                    placeholder="https://linkedin.com/in/usuario"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    GitHub
+                                </label>
+                                <input
+                                    type="url"
+                                    value={formData.github_url}
+                                    onChange={(e) => setFormData({ ...formData, github_url: e.target.value })}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                                    placeholder="https://github.com/usuario"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Instagram
+                                </label>
+                                <input
+                                    type="url"
+                                    value={formData.instagram_url}
+                                    onChange={(e) => setFormData({ ...formData, instagram_url: e.target.value })}
+                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                                    placeholder="https://instagram.com/usuario"
                                 />
                             </div>
 
@@ -287,86 +325,20 @@ function TeamManagement() {
                                     )}
                                 </div>
                             </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    LinkedIn
-                                </label>
-                                <input
-                                    type="url"
-                                    value={formData.linkedin}
-                                    onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
-                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-                                    placeholder="https://linkedin.com/in/usuario"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    GitHub
-                                </label>
-                                <input
-                                    type="url"
-                                    value={formData.github}
-                                    onChange={(e) => setFormData({ ...formData, github: e.target.value })}
-                                    className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-                                    placeholder="https://github.com/usuario"
-                                />
-                            </div>
                         </div>
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Biografia *
+                                Descrição *
                             </label>
                             <textarea
                                 required
                                 rows={4}
-                                value={formData.bio}
-                                onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
                                 placeholder="Conte um pouco sobre a experiência e especialidades deste membro"
                             />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Especialidades
-                            </label>
-                            <div className="flex gap-2 mb-3">
-                                <input
-                                    type="text"
-                                    value={specialtyInput}
-                                    onChange={(e) => setSpecialtyInput(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addSpecialty())}
-                                    placeholder="Digite uma especialidade e pressione Enter"
-                                    className="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-                                />
-                                <button
-                                    type="button"
-                                    onClick={addSpecialty}
-                                    className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors"
-                                >
-                                    Adicionar
-                                </button>
-                            </div>
-                            <div className="flex flex-wrap gap-2">
-                                {formData.specialties.map((specialty, index) => (
-                                    <span
-                                        key={index}
-                                        className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm border border-blue-200"
-                                    >
-                                        {specialty}
-                                        <button
-                                            type="button"
-                                            onClick={() => removeSpecialty(specialty)}
-                                            className="text-blue-600 hover:text-blue-800 ml-1"
-                                        >
-                                            <FaTimes className="text-xs" />
-                                        </button>
-                                    </span>
-                                ))}
-                            </div>
                         </div>
 
                         <div className="flex gap-4 pt-4 border-t border-gray-200">
@@ -411,9 +383,6 @@ function TeamManagement() {
                                     Cargo
                                 </th>
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Especialidades
-                                </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Contato
                                 </th>
                                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -449,7 +418,7 @@ function TeamManagement() {
                                                     {member.name}
                                                 </div>
                                                 <div className="text-sm text-gray-500 line-clamp-2">
-                                                    {member.bio}
+                                                    {member.description}
                                                 </div>
                                             </div>
                                         </div>
@@ -457,32 +426,15 @@ function TeamManagement() {
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         {member.role}
                                     </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex flex-wrap gap-1">
-                                            {member.specialties?.slice(0, 3).map((spec, index) => (
-                                                <span key={index} className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    {spec}
-                                                </span>
-                                            ))}
-                                            {member.specialties?.length > 3 && (
-                                                <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">
-                                                    +{member.specialties.length - 3}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {member.email && (
-                                            <div>{member.email}</div>
-                                        )}
                                         <div className="flex gap-2 mt-1">
-                                            {member.linkedin && (
-                                                <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
+                                            {member.linkedin_url && (
+                                                <a href={member.linkedin_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800">
                                                     LinkedIn
                                                 </a>
                                             )}
-                                            {member.github && (
-                                                <a href={member.github} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
+                                            {member.github_url && (
+                                                <a href={member.github_url} target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-gray-800">
                                                     GitHub
                                                 </a>
                                             )}
@@ -494,6 +446,7 @@ function TeamManagement() {
                                                 onClick={() => handleEdit(member)}
                                                 className="text-blue-600 hover:text-blue-900 p-2 hover:bg-blue-50 rounded-lg transition-colors"
                                                 title="Editar"
+                                                disabled={loading}
                                             >
                                                 <FaEdit />
                                             </button>
@@ -501,6 +454,7 @@ function TeamManagement() {
                                                 onClick={() => handleDelete(member.id)}
                                                 className="text-red-600 hover:text-red-900 p-2 hover:bg-red-50 rounded-lg transition-colors"
                                                 title="Excluir"
+                                                disabled={loading}
                                             >
                                                 <FaTrash />
                                             </button>

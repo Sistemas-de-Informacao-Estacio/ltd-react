@@ -12,44 +12,23 @@ export const adminLogin = async (username, password) => {
       .eq('username', username)
       .single();
 
-    console.log('Resultado da busca:', { user, error });
-
-    if (error) {
-      console.error('Erro na consulta SQL:', error);
-      
-      // Se o erro for "No rows", tentar listar todos os usuários para debug
-      if (error.code === 'PGRST116') {
-        console.log('Usuário não encontrado, listando todos os usuários disponíveis:');
-        const { data: allUsers, error: listError } = await supabase
-          .from('admin_users')
-          .select('username, email, full_name');
-        
-        if (listError) {
-          console.error('Erro ao listar usuários:', listError);
-        } else {
-          console.log('Usuários disponíveis:', allUsers);
-        }
-      }
-      
+    if (error || !user) {
+      console.error('Usuário não encontrado:', error);
       throw new Error('Usuário não encontrado');
     }
 
-    if (!user) {
-      throw new Error('Usuário não encontrado');
-    }
-
-    console.log('Usuário encontrado:', user);
-
-    // Verificação simples de senha
+    // Verificação simples de senha (em produção, use hash adequado)
     const isValidPassword = password === user.password_hash;
-
-    console.log('Senha fornecida:', password);
-    console.log('Senha esperada:', user.password_hash);
-    console.log('Senha válida:', isValidPassword);
 
     if (!isValidPassword) {
       throw new Error('Senha incorreta');
     }
+
+    // Atualizar último login
+    await supabase
+      .from('admin_users')
+      .update({ last_login: new Date().toISOString() })
+      .eq('id', user.id);
 
     // Armazenar dados do usuário no localStorage
     const userData = {
@@ -57,16 +36,19 @@ export const adminLogin = async (username, password) => {
       username: user.username,
       full_name: user.full_name || 'Administrador',
       email: user.email,
-      role: user.role,
+      role: user.role || 'admin',
       loginTime: new Date().toISOString()
     };
 
-    console.log('Login bem-sucedido, salvando dados:', userData);
     localStorage.setItem('adminUser', JSON.stringify(userData));
+    
+    // Definir sessão no Supabase para RLS
+    await supabase.auth.signInAnonymously();
+    
     return userData;
 
   } catch (error) {
-    console.error('Erro detalhado no login:', error);
+    console.error('Erro no login:', error);
     throw error;
   }
 };
@@ -102,14 +84,15 @@ export const getAdminUser = () => {
 };
 
 // Função para fazer logout
-export const adminLogout = () => {
+export const adminLogout = async () => {
   localStorage.removeItem('adminUser');
+  await supabase.auth.signOut();
 };
 
 // Função de debug para testar conexão com o banco
 export const testDatabaseConnection = async () => {
   try {
-    console.log('Testando conexão com o banco...');
+    // eslint-disable-next-line no-unused-vars
     const { data, error } = await supabase
       .from('admin_users')
       .select('count(*)')
@@ -120,7 +103,6 @@ export const testDatabaseConnection = async () => {
       return false;
     }
     
-    console.log('Conexão OK, registros encontrados:', data);
     return true;
   } catch (error) {
     console.error('Erro na conexão:', error);
