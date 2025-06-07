@@ -9,6 +9,7 @@ function TeamManagement() {
     const [showAddForm, setShowAddForm] = useState(false);
     const [uploading, setUploading] = useState(false);
     const [error, setError] = useState(null);
+    const [uploadError, setUploadError] = useState(null);
     const [formData, setFormData] = useState({
         name: '',
         role: '',
@@ -22,7 +23,54 @@ function TeamManagement() {
 
     useEffect(() => {
         fetchMembers();
+        checkStorageSetup();
     }, []);
+
+    const checkStorageSetup = async () => {
+        try {
+            // Verificar se consegue listar buckets
+            const { data: buckets, error } = await supabase.storage.listBuckets();
+            
+            if (error) {
+                console.error('Erro ao listar buckets:', error);
+                setUploadError('Erro na configuração do storage. Usando URLs diretas.');
+                return;
+            }
+            
+            console.log('Buckets disponíveis:', buckets);
+            
+            // Verificar se o bucket 'avatars' existe
+            const avatarBucket = buckets.find(bucket => bucket.name === 'avatars');
+            if (!avatarBucket) {
+                console.warn('Bucket "avatars" não encontrado. Criando...');
+                await createAvatarBucket();
+            }
+        } catch (error) {
+            console.error('Erro na verificação do storage:', error);
+            setUploadError('Sistema de upload não disponível. Use URLs diretas.');
+        }
+    };
+
+    const createAvatarBucket = async () => {
+        try {
+            const { data, error } = await supabase.storage.createBucket('avatars', {
+                public: true,
+                allowedMimeTypes: ['image/png', 'image/jpg', 'image/jpeg', 'image/gif', 'image/webp'],
+                fileSizeLimit: 1024000 // 1MB
+            });
+
+            if (error) {
+                console.error('Erro ao criar bucket:', error);
+                return false;
+            }
+            
+            console.log('Bucket "avatars" criado com sucesso:', data);
+            return true;
+        } catch (error) {
+            console.error('Erro ao criar bucket:', error);
+            return false;
+        }
+    };
 
     const fetchMembers = async () => {
         try {
@@ -46,35 +94,76 @@ function TeamManagement() {
         const file = event.target.files[0];
         if (!file) return;
 
-        if (!file.type.startsWith('image/')) {
-            alert('Por favor, selecione apenas arquivos de imagem');
+        // Validar tipo de arquivo
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            alert('Por favor, selecione apenas arquivos de imagem (JPEG, PNG, GIF, WebP)');
+            return;
+        }
+
+        // Validar tamanho do arquivo (1MB max)
+        if (file.size > 1024 * 1024) {
+            alert('A imagem deve ter no máximo 1MB');
             return;
         }
 
         setUploading(true);
+        setUploadError(null);
+
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
+            // Gerar nome único para o arquivo
+            const fileExt = file.name.split('.').pop().toLowerCase();
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
             const filePath = `team/${fileName}`;
 
-            const { error: uploadError } = await supabase.storage
-                .from('images')
-                .upload(filePath, file);
+            console.log('Iniciando upload:', { fileName, filePath, fileSize: file.size, fileType: file.type });
 
-            if (uploadError) throw uploadError;
+            // Tentar fazer upload para o Supabase Storage
+            const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
 
-            const { data: { publicUrl } } = supabase.storage
-                .from('images')
+            if (uploadError) {
+                console.error('Erro no upload:', uploadError);
+                throw new Error(`Erro no upload: ${uploadError.message}`);
+            }
+
+            console.log('Upload realizado com sucesso:', uploadData);
+
+            // Obter URL pública
+            const { data: urlData } = supabase.storage
+                .from('avatars')
                 .getPublicUrl(filePath);
 
-            setFormData({
-                ...formData,
-                photo_url: publicUrl
-            });
+            if (!urlData?.publicUrl) {
+                throw new Error('Erro ao obter URL pública da imagem');
+            }
+
+            console.log('URL pública gerada:', urlData.publicUrl);
+
+            // Atualizar o form data com a nova URL
+            setFormData(prev => ({
+                ...prev,
+                photo_url: urlData.publicUrl
+            }));
+
+            alert('Imagem enviada com sucesso!');
 
         } catch (error) {
-            console.error('Erro ao fazer upload:', error);
-            alert('Erro ao fazer upload da imagem');
+            console.error('Erro completo no upload:', error);
+            setUploadError(error.message || 'Erro ao fazer upload da imagem');
+            
+            // Fallback: permitir inserção manual de URL
+            const manualUrl = prompt('Erro no upload automático. Insira uma URL de imagem manualmente (opcional):');
+            if (manualUrl && manualUrl.trim()) {
+                setFormData(prev => ({
+                    ...prev,
+                    photo_url: manualUrl.trim()
+                }));
+            }
         } finally {
             setUploading(false);
         }
@@ -86,33 +175,46 @@ function TeamManagement() {
         setError(null);
 
         try {
+            // Validar dados obrigatórios
+            if (!formData.name.trim() || !formData.role.trim()) {
+                throw new Error('Nome e cargo são obrigatórios');
+            }
+
+            const memberData = {
+                name: formData.name.trim(),
+                role: formData.role.trim(),
+                description: formData.description.trim() || '',
+                photo_url: formData.photo_url.trim() || `https://ui-avatars.com/api/?name=${encodeURIComponent(formData.name)}&background=4158d0&color=fff&size=200`,
+                linkedin_url: formData.linkedin_url.trim() || '',
+                github_url: formData.github_url.trim() || '',
+                instagram_url: formData.instagram_url.trim() || '',
+                order_position: parseInt(formData.order_position) || 0,
+                updated_at: new Date().toISOString()
+            };
+
             if (editingMember) {
                 const { error } = await supabase
                     .from('team_members')
-                    .update({
-                        ...formData,
-                        updated_at: new Date().toISOString()
-                    })
+                    .update(memberData)
                     .eq('id', editingMember.id);
 
                 if (error) throw error;
+                alert('Membro atualizado com sucesso!');
             } else {
-                // Definir order_position automaticamente
+                // Para novos membros, definir order_position automaticamente
                 const maxOrder = members.length > 0 ? Math.max(...members.map(m => m.order_position || 0)) : 0;
+                memberData.order_position = maxOrder + 1;
                 
                 const { error } = await supabase
                     .from('team_members')
-                    .insert([{
-                        ...formData,
-                        order_position: maxOrder + 1
-                    }]);
+                    .insert([memberData]);
 
                 if (error) throw error;
+                alert('Membro adicionado com sucesso!');
             }
 
             handleCancelEdit();
             await fetchMembers();
-            alert(editingMember ? 'Membro atualizado com sucesso!' : 'Membro adicionado com sucesso!');
         } catch (error) {
             console.error('Erro ao salvar membro:', error);
             setError('Erro ao salvar membro da equipe: ' + error.message);
@@ -134,6 +236,8 @@ function TeamManagement() {
         });
         setEditingMember(member);
         setShowAddForm(true);
+        setError(null);
+        setUploadError(null);
     };
 
     const handleDelete = async (id) => {
@@ -180,6 +284,11 @@ function TeamManagement() {
         setEditingMember(null);
         setShowAddForm(false);
         setError(null);
+        setUploadError(null);
+    };
+
+    const generateAvatarUrl = (name) => {
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4158d0&color=fff&size=200&bold=true`;
     };
 
     if (loading && members.length === 0) {
@@ -208,6 +317,13 @@ function TeamManagement() {
             {error && (
                 <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                     {error}
+                </div>
+            )}
+
+            {/* Aviso sobre sistema de upload */}
+            {uploadError && (
+                <div className="bg-yellow-50 border border-yellow-200 text-yellow-700 px-4 py-3 rounded-lg">
+                    <strong>Aviso:</strong> {uploadError}
                 </div>
             )}
 
@@ -299,28 +415,61 @@ function TeamManagement() {
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Foto de Perfil
                                 </label>
-                                <div className="space-y-2">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageUpload}
-                                        disabled={uploading}
-                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
-                                    />
-                                    {uploading && (
-                                        <div className="flex items-center gap-2 text-blue-600">
-                                            <FaUpload className="animate-pulse" />
-                                            <span className="text-sm">Fazendo upload...</span>
-                                        </div>
+                                <div className="space-y-3">
+                                    {/* Upload de arquivo */}
+                                    <div>
+                                        <input
+                                            type="file"
+                                            accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                            onChange={handleImageUpload}
+                                            disabled={uploading}
+                                            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                                        />
+                                        {uploading && (
+                                            <div className="flex items-center gap-2 text-blue-600 mt-2">
+                                                <FaUpload className="animate-pulse" />
+                                                <span className="text-sm">Fazendo upload...</span>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Campo para URL manual */}
+                                    <div>
+                                        <label className="block text-xs text-gray-500 mb-1">
+                                            Ou insira uma URL de imagem:
+                                        </label>
+                                        <input
+                                            type="url"
+                                            value={formData.photo_url}
+                                            onChange={(e) => setFormData({ ...formData, photo_url: e.target.value })}
+                                            className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 text-sm"
+                                            placeholder="https://exemplo.com/foto.jpg"
+                                        />
+                                    </div>
+
+                                    {/* Botão para gerar avatar automático */}
+                                    {formData.name && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, photo_url: generateAvatarUrl(formData.name) })}
+                                            className="text-xs bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-1 rounded transition-colors"
+                                        >
+                                            Gerar avatar automático
+                                        </button>
                                     )}
+
+                                    {/* Preview da imagem */}
                                     {formData.photo_url && (
-                                        <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-3">
                                             <img 
                                                 src={formData.photo_url} 
                                                 alt="Preview" 
                                                 className="w-12 h-12 rounded-full object-cover border border-gray-300"
+                                                onError={(e) => {
+                                                    e.target.style.display = 'none';
+                                                }}
                                             />
-                                            <span className="text-sm text-green-600">Imagem carregada</span>
+                                            <span className="text-sm text-green-600">✓ Imagem carregada</span>
                                         </div>
                                     )}
                                 </div>
@@ -396,22 +545,14 @@ function TeamManagement() {
                                     <td className="px-6 py-4">
                                         <div className="flex items-center">
                                             <div className="flex-shrink-0 h-10 w-10">
-                                                {member.photo_url ? (
-                                                    <img
-                                                        className="h-10 w-10 rounded-full object-cover border border-gray-300"
-                                                        src={member.photo_url}
-                                                        alt={member.name}
-                                                        onError={(e) => {
-                                                            e.target.style.display = 'none';
-                                                            e.target.nextSibling.style.display = 'flex';
-                                                        }}
-                                                    />
-                                                ) : null}
-                                                <div 
-                                                    className={`h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center ${member.photo_url ? 'hidden' : 'flex'}`}
-                                                >
-                                                    <FaUser className="text-gray-500" />
-                                                </div>
+                                                <img
+                                                    className="h-10 w-10 rounded-full object-cover border border-gray-300"
+                                                    src={member.photo_url || generateAvatarUrl(member.name)}
+                                                    alt={member.name}
+                                                    onError={(e) => {
+                                                        e.target.src = generateAvatarUrl(member.name);
+                                                    }}
+                                                />
                                             </div>
                                             <div className="ml-4">
                                                 <div className="text-sm font-medium text-gray-900">
