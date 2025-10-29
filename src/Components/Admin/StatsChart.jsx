@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import { FaChartLine, FaTrendingUp, FaTrendingDown } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaChartLine, FaArrowUp, FaArrowDown } from 'react-icons/fa';
 
-function StatsChart({ title, data = [], color = '#3b82f6' }) {
+const StatsChart = ({ title, data = [], color = '#3b82f6' }) => {
     const [animatedData, setAnimatedData] = useState([]);
 
     useEffect(() => {
@@ -31,7 +31,7 @@ function StatsChart({ title, data = [], color = '#3b82f6' }) {
                 <div className={`flex items-center gap-1 text-sm font-semibold ${
                     trend > 0 ? 'text-green-600' : trend < 0 ? 'text-red-600' : 'text-gray-600'
                 }`}>
-                    {trend > 0 ? <FaTrendingUp /> : trend < 0 ? <FaTrendingDown /> : null}
+                    {trend > 0 ? <FaArrowUp /> : trend < 0 ? <FaArrowDown /> : null}
                     {trend !== 0 && `${trend > 0 ? '+' : ''}${trend}`}
                 </div>
             </div>
@@ -66,6 +66,6 @@ function StatsChart({ title, data = [], color = '#3b82f6' }) {
             </div>
         </div>
     );
-}
+};
 
 export default StatsChart;
