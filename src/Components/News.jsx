@@ -1,26 +1,47 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-import { FaCalendar, FaUser, FaTag, FaStar, FaSearch, FaTimes, FaNewspaper, FaClock, FaEye, FaArrowRight, FaFilter } from 'react-icons/fa';
+import { FaCalendar, FaUser, FaTag, FaStar, FaSearch, FaTimes, FaNewspaper, FaClock, FaEye, FaArrowRight, FaFilter, FaBuilding, FaGlobe, FaExternalLinkAlt } from 'react-icons/fa';
+
+const NEWS_API_KEY = '584549865faa4b32a20d4969b3058546';
+const NEWS_API_URL = 'https://newsapi.org/v2/everything';
 
 function News() {
-    const [news, setNews] = useState([]);
-    const [filteredNews, setFilteredNews] = useState([]);
+    // Notícias do LTD
+    const [ltdNews, setLtdNews] = useState([]);
+    const [filteredLtdNews, setFilteredLtdNews] = useState([]);
+    
+    // Notícias de tecnologia externa
+    const [techNews, setTechNews] = useState([]);
+    const [filteredTechNews, setFilteredTechNews] = useState([]);
+    
+    // Estados gerais
     const [selectedNews, setSelectedNews] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('ltd');
     const [selectedCategory, setSelectedCategory] = useState('Todas');
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        fetchNews();
+        fetchAllNews();
         window.scrollTo(0, 0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         filterNews();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [news, selectedCategory, searchTerm]);
+    }, [ltdNews, techNews, selectedCategory, searchTerm, activeTab]);
 
-    const fetchNews = async () => {
+    const fetchAllNews = async () => {
+        setLoading(true);
+        await Promise.all([
+            fetchLtdNews(),
+            fetchTechNews()
+        ]);
+        setLoading(false);
+    };
+
+    const fetchLtdNews = async () => {
         try {
             const { data, error } = await supabase
                 .from('news')
@@ -29,18 +50,62 @@ function News() {
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
-            setNews(data || []);
+            const newsData = data || [];
+            setLtdNews(newsData);
+            setFilteredLtdNews(newsData);
         } catch (error) {
-            console.error('Erro ao buscar notícias:', error);
-        } finally {
-            setLoading(false);
+            console.error('Erro ao buscar notícias do LTD:', error);
+        }
+    };
+
+    const fetchTechNews = async () => {
+        try {
+            const today = new Date();
+            const lastMonth = new Date(today.setMonth(today.getMonth() - 1));
+            const fromDate = lastMonth.toISOString().split('T')[0];
+
+            const params = new URLSearchParams({
+                q: 'tecnologia OR inteligência artificial OR cibersegurança',
+                from: fromDate,
+                sortBy: 'publishedAt',
+                language: 'pt',
+                pageSize: 15,
+                apiKey: NEWS_API_KEY
+            });
+
+            const response = await fetch(`${NEWS_API_URL}?${params}`);
+            const result = await response.json();
+
+            if (result.status === 'ok') {
+                const formattedNews = result.articles.map((article, index) => ({
+                    id: `tech-${index}`,
+                    title: article.title,
+                    content: article.description || article.content || '',
+                    excerpt: article.description,
+                    image_url: article.urlToImage,
+                    author: article.author || article.source.name,
+                    category: 'Tecnologia',
+                    published: true,
+                    featured: false,
+                    created_at: article.publishedAt,
+                    source_url: article.url,
+                    source_name: article.source.name,
+                    isExternal: true
+                }));
+                
+                setTechNews(formattedNews);
+                setFilteredTechNews(formattedNews);
+            }
+        } catch (error) {
+            console.error('Erro ao buscar notícias de tecnologia:', error);
         }
     };
 
     const filterNews = () => {
-        let filtered = news;
+        const currentNews = activeTab === 'ltd' ? ltdNews : techNews;
+        let filtered = currentNews;
 
-        if (selectedCategory !== 'Todas') {
+        if (selectedCategory !== 'Todas' && activeTab === 'ltd') {
             filtered = filtered.filter(item => item.category === selectedCategory);
         }
 
@@ -48,18 +113,21 @@ function News() {
             const search = searchTerm.toLowerCase();
             filtered = filtered.filter(item =>
                 item.title.toLowerCase().includes(search) ||
-                item.content.toLowerCase().includes(search) ||
-                item.excerpt?.toLowerCase().includes(search) ||
-                item.tags?.some(tag => tag.toLowerCase().includes(search))
+                (item.content && item.content.toLowerCase().includes(search)) ||
+                (item.excerpt && item.excerpt?.toLowerCase().includes(search))
             );
         }
 
-        setFilteredNews(filtered);
+        if (activeTab === 'ltd') {
+            setFilteredLtdNews(filtered);
+        } else {
+            setFilteredTechNews(filtered);
+        }
     };
 
-    const categories = ['Todas', ...new Set(news.map(item => item.category))];
-    
-    const featuredNews = news.filter(item => item.featured).slice(0, 1);
+    const categories = ['Todas', ...new Set(ltdNews.map(item => item.category).filter(Boolean))];
+    const featuredNews = ltdNews.filter(item => item.featured).slice(0, 1);
+    const currentNews = activeTab === 'ltd' ? filteredLtdNews : filteredTechNews;
 
     const getCategoryColor = (category) => {
         const colors = {
@@ -83,6 +151,7 @@ function News() {
     };
 
     const getReadingTime = (content) => {
+        if (!content) return 1;
         const wordsPerMinute = 200;
         const words = content.split(/\s+/).length;
         const minutes = Math.ceil(words / wordsPerMinute);
@@ -124,7 +193,7 @@ function News() {
                 </div>
 
                 <div className="max-w-7xl mx-auto relative z-10">
-                    <div className="text-center mb-12" data-aos="fade-up">
+                    <div className="text-center mb-12">
                         <div className="inline-block px-6 py-3 bg-blue-500/20 rounded-full text-blue-300 font-semibold mb-6 border border-blue-500/30">
                             📰 Central de Notícias
                         </div>
@@ -132,31 +201,72 @@ function News() {
                             Últimas Notícias
                         </h1>
                         <p className="text-xl md:text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
-                            Fique por dentro das novidades, inovações e atualizações do Laboratório de Transformação Digital
+                            Notícias do LTD e as principais novidades do mundo da tecnologia
                         </p>
+                    </div>
+
+                    {/* Tabs */}
+                    <div className="flex justify-center gap-4 mb-8 flex-wrap">
+                        <button
+                            onClick={() => {
+                                setActiveTab('ltd');
+                                setSearchTerm('');
+                                setSelectedCategory('Todas');
+                            }}
+                            className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
+                                activeTab === 'ltd'
+                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/50'
+                                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 border border-gray-700'
+                            }`}
+                        >
+                            <FaBuilding className="text-2xl" />
+                            <div className="text-left">
+                                <div>Notícias do LTD</div>
+                                <div className="text-sm font-normal opacity-80">{ltdNews.length} notícias</div>
+                            </div>
+                        </button>
+                        
+                        <button
+                            onClick={() => {
+                                setActiveTab('tech');
+                                setSearchTerm('');
+                                setSelectedCategory('Todas');
+                            }}
+                            className={`flex items-center gap-3 px-8 py-4 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 ${
+                                activeTab === 'tech'
+                                    ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/50'
+                                    : 'bg-gray-800/50 text-gray-400 hover:bg-gray-800 border border-gray-700'
+                            }`}
+                        >
+                            <FaGlobe className="text-2xl" />
+                            <div className="text-left">
+                                <div>Tecnologia Global</div>
+                                <div className="text-sm font-normal opacity-80">{techNews.length} notícias</div>
+                            </div>
+                        </button>
                     </div>
 
                     {/* Estatísticas */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/40 backdrop-blur-md p-6 rounded-2xl border border-blue-500/30 text-center">
                             <FaNewspaper className="text-3xl text-blue-400 mx-auto mb-3" />
-                            <div className="text-3xl font-bold text-white mb-1">{news.length}</div>
-                            <div className="text-blue-200 text-sm">Notícias</div>
+                            <div className="text-3xl font-bold text-white mb-1">{ltdNews.length + techNews.length}</div>
+                            <div className="text-blue-200 text-sm">Total</div>
                         </div>
                         <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/40 backdrop-blur-md p-6 rounded-2xl border border-purple-500/30 text-center">
                             <FaStar className="text-3xl text-yellow-400 mx-auto mb-3" />
-                            <div className="text-3xl font-bold text-white mb-1">{news.filter(n => n.featured).length}</div>
+                            <div className="text-3xl font-bold text-white mb-1">{ltdNews.filter(n => n.featured).length}</div>
                             <div className="text-purple-200 text-sm">Destaques</div>
                         </div>
                         <div className="bg-gradient-to-br from-green-900/40 to-green-800/40 backdrop-blur-md p-6 rounded-2xl border border-green-500/30 text-center">
-                            <FaTag className="text-3xl text-green-400 mx-auto mb-3" />
-                            <div className="text-3xl font-bold text-white mb-1">{categories.length - 1}</div>
-                            <div className="text-green-200 text-sm">Categorias</div>
+                            <FaBuilding className="text-3xl text-green-400 mx-auto mb-3" />
+                            <div className="text-3xl font-bold text-white mb-1">{ltdNews.length}</div>
+                            <div className="text-green-200 text-sm">LTD</div>
                         </div>
-                        <div className="bg-gradient-to-br from-pink-900/40 to-pink-800/40 backdrop-blur-md p-6 rounded-2xl border border-pink-500/30 text-center">
-                            <FaClock className="text-3xl text-pink-400 mx-auto mb-3" />
-                            <div className="text-3xl font-bold text-white mb-1">Hoje</div>
-                            <div className="text-pink-200 text-sm">Atualizado</div>
+                        <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-800/40 backdrop-blur-md p-6 rounded-2xl border border-cyan-500/30 text-center">
+                            <FaGlobe className="text-3xl text-cyan-400 mx-auto mb-3" />
+                            <div className="text-3xl font-bold text-white mb-1">{techNews.length}</div>
+                            <div className="text-cyan-200 text-sm">Tecnologia</div>
                         </div>
                     </div>
                 </div>
@@ -164,7 +274,7 @@ function News() {
 
             <div className="max-w-7xl mx-auto px-6 py-12">
                 {/* Filtros Aprimorados */}
-                <div className="mb-12 bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-gray-700" data-aos="fade-up">
+                <div className="mb-12 bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-gray-700">
                     <div className="flex items-center gap-3 mb-6">
                         <FaFilter className="text-2xl text-blue-400" />
                         <h3 className="text-2xl font-bold text-white">Filtros</h3>
@@ -183,30 +293,32 @@ function News() {
                             />
                         </div>
 
-                        {/* Categorias */}
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-400 mb-3">CATEGORIAS</label>
-                            <div className="flex flex-wrap gap-3">
-                                {categories.map(category => (
-                                    <button
-                                        key={category}
-                                        onClick={() => setSelectedCategory(category)}
-                                        className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
-                                            selectedCategory === category
-                                                ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/50'
-                                                : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
-                                        }`}
-                                    >
-                                        {category}
-                                    </button>
-                                ))}
+                        {/* Categorias (só para LTD) */}
+                        {activeTab === 'ltd' && categories.length > 1 && (
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-400 mb-3">CATEGORIAS</label>
+                                <div className="flex flex-wrap gap-3">
+                                    {categories.map(category => (
+                                        <button
+                                            key={category}
+                                            onClick={() => setSelectedCategory(category)}
+                                            className={`px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-300 transform hover:scale-105 ${
+                                                selectedCategory === category
+                                                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg shadow-blue-500/50'
+                                                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700 border border-gray-700'
+                                            }`}
+                                        >
+                                            {category}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
 
                 {/* Notícia em Destaque Principal */}
-                {featuredNews.length > 0 && searchTerm === '' && selectedCategory === 'Todas' && (
+                {activeTab === 'ltd' && featuredNews.length > 0 && searchTerm === '' && selectedCategory === 'Todas' && (
                     <section className="mb-16" data-aos="fade-up">
                         <div className="flex items-center gap-3 mb-8">
                             <FaStar className="text-3xl text-yellow-500" />
@@ -285,21 +397,19 @@ function News() {
                 )}
 
                 {/* Lista de Notícias */}
-                <section data-aos="fade-up">
+                <section>
                     <div className="flex items-center justify-between mb-8">
                         <div>
                             <h2 className="text-4xl font-bold text-white mb-2">
-                                {searchTerm ? `Resultados para "${searchTerm}"` : 
-                                 selectedCategory !== 'Todas' ? `${selectedCategory}` : 
-                                 'Todas as Notícias'}
+                                {activeTab === 'ltd' ? 'Notícias do LTD' : 'Notícias de Tecnologia Global'}
                             </h2>
                             <p className="text-lg text-gray-400">
-                                {filteredNews.length} {filteredNews.length === 1 ? 'notícia encontrada' : 'notícias encontradas'}
+                                {currentNews.length} {currentNews.length === 1 ? 'notícia encontrada' : 'notícias encontradas'}
                             </p>
                         </div>
                     </div>
                     
-                    {filteredNews.length === 0 ? (
+                    {currentNews.length === 0 ? (
                         <div className="text-center py-20 bg-gradient-to-br from-gray-800/50 to-gray-900/50 backdrop-blur-md rounded-3xl border border-gray-700">
                             <FaSearch className="mx-auto h-20 w-20 text-gray-600 mb-6" />
                             <h3 className="text-2xl font-bold text-white mb-3">Nenhuma notícia encontrada</h3>
@@ -323,13 +433,11 @@ function News() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                            {filteredNews.map((newsItem, index) => (
+                            {currentNews.map((newsItem) => (
                                 <article
                                     key={newsItem.id}
                                     className="group bg-gradient-to-br from-gray-800/80 to-gray-900/80 backdrop-blur-md rounded-2xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-500 cursor-pointer transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/20"
-                                    onClick={() => showNewsDetail(newsItem)}
-                                    data-aos="fade-up"
-                                    data-aos-delay={index * 50}
+                                    onClick={() => newsItem.isExternal ? window.open(newsItem.source_url, '_blank') : showNewsDetail(newsItem)}
                                 >
                                     {newsItem.image_url && (
                                         <div className="relative h-48 overflow-hidden">
@@ -337,6 +445,9 @@ function News() {
                                                 src={newsItem.image_url}
                                                 alt={newsItem.title}
                                                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                                onError={(e) => {
+                                                    e.target.src = 'https://via.placeholder.com/400x300/1a1a2e/16c99b?text=Sem+Imagem';
+                                                }}
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                             <div className="absolute top-4 left-4">
@@ -347,6 +458,16 @@ function News() {
                                             {newsItem.featured && (
                                                 <div className="absolute top-4 right-4">
                                                     <FaStar className="text-yellow-500 text-xl drop-shadow-lg" />
+                                                </div>
+                                            )}
+                                            {newsItem.isExternal && (
+                                                <div className="absolute bottom-4 right-4">
+                                                    <FaExternalLinkAlt className="text-white text-lg drop-shadow-lg" />
+                                                </div>
+                                            )}
+                                            {newsItem.isExternal && (
+                                                <div className="absolute bottom-4 right-4">
+                                                    <FaExternalLinkAlt className="text-white text-lg drop-shadow-lg" />
                                                 </div>
                                             )}
                                         </div>
@@ -363,8 +484,8 @@ function News() {
                                         
                                         <div className="flex items-center justify-between text-sm text-gray-400 mb-4">
                                             <div className="flex items-center gap-2">
-                                                <FaUser className="text-blue-400" />
-                                                <span className="truncate">{newsItem.author}</span>
+                                                {newsItem.isExternal ? <FaGlobe className="text-cyan-400" /> : <FaUser className="text-blue-400" />}
+                                                <span className="truncate max-w-[150px]">{newsItem.author}</span>
                                             </div>
                                             <div className="flex items-center gap-2">
                                                 <FaClock className="text-purple-400" />
@@ -376,6 +497,15 @@ function News() {
                                             <FaCalendar />
                                             <span>{formatDate(newsItem.created_at)}</span>
                                         </div>
+
+                                        {newsItem.isExternal && newsItem.source_name && (
+                                            <div className="mt-3 pt-3 border-t border-gray-700">
+                                                <div className="flex items-center gap-2 text-xs text-cyan-400">
+                                                    <FaGlobe />
+                                                    <span className="truncate">Fonte: {newsItem.source_name}</span>
+                                                </div>
+                                            </div>
+                                        )}
 
                                         {newsItem.tags && newsItem.tags.length > 0 && (
                                             <div className="mt-4 flex flex-wrap gap-2">
@@ -400,8 +530,8 @@ function News() {
                 </section>
             </div>
 
-            {/* Modal de Detalhes Aprimorado */}
-            {selectedNews && (
+            {/* Modal de Detalhes (só para notícias LTD) */}
+            {selectedNews && !selectedNews.isExternal && (
                 <div className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto">
                     <div className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-3xl max-w-5xl w-full my-8 border border-gray-700 shadow-2xl">
                         {/* Header Fixo */}
