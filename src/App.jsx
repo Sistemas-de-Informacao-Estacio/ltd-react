@@ -25,6 +25,7 @@ import Blog from './Components/Blog';
 import AppsAndroid from './Components/AppsAndroid';
 import VscodeExtensions from './Components/VscodeExtensions';
 import Documentacoes from './Components/Documentacoes';
+import Eventos from './Components/Eventos';
 
 // ============================================
 // ADMIN PAGES
@@ -52,6 +53,7 @@ const homeRoute = { path: '/', element: <Home />, label: 'Home' };
 const ltdRoutes = [
   { path: '/ltd/sobre', element: <About />, label: 'Sobre' },
   { path: '/ltd/quem-somos', element: <WeAre />, label: 'Quem Somos' },
+  { path: '/ltd/eventos', element: <Eventos />, label: 'Eventos' },
   { path: '/ltd/contato', element: <Contact />, label: 'Contato' },
 ];
 

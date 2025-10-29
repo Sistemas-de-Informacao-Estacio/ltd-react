@@ -1,18 +1,7 @@
 import { Link } from "react-router-dom";
-import ButtonSaibaMais from "../Components/ButtonSaibaMais";
-import { FaDownload, FaAndroid, FaUsers, FaCity, FaCode, FaShieldAlt, FaBrain, FaDatabase, FaRocket, FaCalendarAlt, FaStar, FaArrowRight, FaChartLine } from "react-icons/fa";
+import { FaDownload, FaAndroid, FaUsers, FaCity, FaCode, FaShieldAlt, FaBrain, FaRocket, FaCalendarAlt, FaStar, FaArrowRight, FaChartLine } from "react-icons/fa";
 
 function Home() {
-  const handleDownloadApp = () => {
-    const link = document.createElement('a');
-    link.href = "https://github.com/LTD-2025-1-Cyber-Security-Project/desenvolvimento/releases/download/v2.0.0/geradorcurriculo.exe";
-    link.setAttribute('download', '');
-    link.setAttribute('target', '_blank');
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
   const timelineData = [
     {
       year: "2023",
@@ -108,6 +97,141 @@ function Home() {
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
               <div className="text-3xl font-bold text-pink-400 mb-2">50+</div>
               <div className="text-gray-300 text-sm">Projetos</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* História do LTD Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-300 via-purple-300 to-pink-300 bg-clip-text text-transparent mb-6">
+              📖 A História do LTD
+            </h2>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Conheça a trajetória do Laboratório de Transformação Digital e como tudo começou
+            </p>
+          </div>
+
+          <div className="space-y-12">
+            {/* Primeira Imagem - Reunião */}
+            <div className="bg-gradient-to-br from-blue-900/30 to-purple-900/30 rounded-3xl overflow-hidden border border-blue-500/20 backdrop-blur-sm">
+              <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+                <div className="order-2 md:order-1">
+                  <div className="inline-block px-4 py-2 bg-blue-500/20 rounded-full text-blue-300 text-sm font-semibold mb-4">
+                    🚀 O Início
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    Primeiros Passos
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    O LTD nasceu da necessidade de criar soluções tecnológicas inovadoras que pudessem transformar 
+                    o setor público. Nossa primeira reunião marcou o início de uma jornada extraordinária, onde 
+                    estudantes e professores da Estácio se uniram com um objetivo comum: modernizar a gestão pública 
+                    através da tecnologia.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    Com o apoio das Prefeituras de São José e Florianópolis, começamos a desenvolver ferramentas 
+                    que hoje fazem diferença na vida de milhares de pessoas.
+                  </p>
+                </div>
+                <div className="order-1 md:order-2">
+                  <img 
+                    src="/historia/reuniao.png" 
+                    alt="Primeira reunião do LTD" 
+                    className="w-full h-auto rounded-2xl shadow-2xl border border-blue-500/30 transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Segunda Imagem - Integrantes */}
+            <div className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-3xl overflow-hidden border border-purple-500/20 backdrop-blur-sm">
+              <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+                <div className="order-1">
+                  <img 
+                    src="/historia/integrantes.png" 
+                    alt="Equipe LTD" 
+                    className="w-full h-auto rounded-2xl shadow-2xl border border-purple-500/30 transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+                <div className="order-2">
+                  <div className="inline-block px-4 py-2 bg-purple-500/20 rounded-full text-purple-300 text-sm font-semibold mb-4">
+                    👥 Nossa Equipe
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    Equipe Multidisciplinar
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    Nossa força está na diversidade. Reunimos estudantes de Sistemas de Informação, Ciência da 
+                    Computação e áreas correlatas, cada um trazendo suas habilidades únicas para o projeto.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed">
+                    Trabalhamos com metodologias ágeis, tecnologias de ponta e muita colaboração. Juntos, 
+                    desenvolvemos desde aplicativos mobile até sistemas complexos de inteligência artificial.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Terceira Imagem - Integrantes 2 */}
+            <div className="bg-gradient-to-br from-green-900/30 to-blue-900/30 rounded-3xl overflow-hidden border border-green-500/20 backdrop-blur-sm">
+              <div className="grid md:grid-cols-2 gap-8 items-center p-8 md:p-12">
+                <div className="order-2 md:order-1">
+                  <div className="inline-block px-4 py-2 bg-green-500/20 rounded-full text-green-300 text-sm font-semibold mb-4">
+                    🎯 Nosso Impacto
+                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-4">
+                    Transformando Realidades
+                  </h3>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    Hoje, o LTD é referência em inovação tecnológica no setor público. Já desenvolvemos mais de 
+                    50 projetos, entre aplicativos, sistemas web, ferramentas de IA e soluções de cibersegurança.
+                  </p>
+                  <p className="text-gray-300 leading-relaxed mb-4">
+                    Nossa atuação vai além do código: realizamos workshops, treinamentos e eventos que capacitam 
+                    servidores públicos e cidadãos para o mundo digital.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 mt-6">
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                      <div className="text-2xl font-bold text-green-400">15+</div>
+                      <div className="text-gray-400 text-sm">Apps Criados</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                      <div className="text-2xl font-bold text-blue-400">2</div>
+                      <div className="text-gray-400 text-sm">Prefeituras</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                      <div className="text-2xl font-bold text-purple-400">7+</div>
+                      <div className="text-gray-400 text-sm">Especialistas</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                      <div className="text-2xl font-bold text-pink-400">1000+</div>
+                      <div className="text-gray-400 text-sm">Vidas Impactadas</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="order-1 md:order-2">
+                  <img 
+                    src="/historia/integrantes2.png" 
+                    alt="Equipe LTD trabalhando" 
+                    className="w-full h-auto rounded-2xl shadow-2xl border border-green-500/30 transform hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Call to Action */}
+            <div className="text-center mt-12">
+              <Link
+                to="/ltd/eventos"
+                className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold text-lg"
+              >
+                <FaCalendarAlt className="text-xl" />
+                Veja Nossos Eventos e Reuniões
+                <FaArrowRight />
+              </Link>
             </div>
           </div>
         </div>

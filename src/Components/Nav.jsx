@@ -19,6 +19,7 @@ function Nav() {
             submenu: [
                 { name: 'Sobre', path: '/ltd/sobre' },
                 { name: 'Quem Somos', path: '/ltd/quem-somos' },
+                { name: 'Eventos', path: '/ltd/eventos' },
                 { name: 'Contato', path: '/ltd/contato' }
             ]
         },
@@ -39,7 +40,8 @@ function Nav() {
             path: null, 
             submenu: [
                 { name: 'Notícias', path: '/outros/noticias' },
-                { name: 'Blog', path: '/outros/blog' }
+                { name: 'Blog', path: '/outros/blog' },
+                { name: 'Documentações', path: '/outros/documentacoes' }
             ]
         },
         { name: 'Admin', path: '/admin' }
