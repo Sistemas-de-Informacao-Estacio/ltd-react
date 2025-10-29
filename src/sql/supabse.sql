@@ -8,6 +8,9 @@ DROP TABLE IF EXISTS documents CASCADE;
 DROP TABLE IF EXISTS applications CASCADE;
 DROP TABLE IF EXISTS admin_users CASCADE;
 DROP TABLE IF EXISTS news CASCADE;
+DROP TABLE IF EXISTS blogs CASCADE;
+DROP TABLE IF EXISTS android_apps CASCADE;
+DROP TABLE IF EXISTS vscode_extensions CASCADE;
 
 -- Remover bucket de storage se existir
 DELETE FROM storage.objects WHERE bucket_id = 'avatars';
@@ -91,6 +94,58 @@ CREATE TABLE news (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Tabela de blogs
+CREATE TABLE blogs (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(500) NOT NULL,
+    content TEXT NOT NULL,
+    excerpt TEXT,
+    featured_image TEXT,
+    author VARCHAR(100) DEFAULT 'LTD Team',
+    category VARCHAR(100) DEFAULT 'Tecnologia',
+    published BOOLEAN DEFAULT true,
+    tags TEXT[],
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de apps android
+CREATE TABLE android_apps (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    icon VARCHAR(50) DEFAULT '📱',
+    color_gradient VARCHAR(100) DEFAULT 'from-blue-500 to-purple-600',
+    features TEXT[],
+    tags TEXT[],
+    download_url VARCHAR(500) NOT NULL,
+    version VARCHAR(50) NOT NULL,
+    rating DECIMAL(2,1) DEFAULT 4.5,
+    downloads INTEGER DEFAULT 0,
+    published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Tabela de extensões VS Code
+CREATE TABLE vscode_extensions (
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    category VARCHAR(100) NOT NULL,
+    features TEXT[],
+    tags TEXT[],
+    marketplace_url VARCHAR(500) NOT NULL,
+    version VARCHAR(50) NOT NULL,
+    rating DECIMAL(2,1) DEFAULT 4.5,
+    installs INTEGER DEFAULT 0,
+    author VARCHAR(100) DEFAULT 'LTD Team',
+    published BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- ============================================
 -- CONFIGURAR STORAGE
 -- ============================================
@@ -114,6 +169,9 @@ ALTER TABLE team_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE applications ENABLE ROW LEVEL SECURITY;
 ALTER TABLE news ENABLE ROW LEVEL SECURITY;
+ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE android_apps ENABLE ROW LEVEL SECURITY;
+ALTER TABLE vscode_extensions ENABLE ROW LEVEL SECURITY;
 
 -- Políticas para team_members
 CREATE POLICY "Allow public read access" ON team_members FOR SELECT USING (true);
@@ -130,6 +188,18 @@ CREATE POLICY "Allow authenticated users all access" ON applications FOR ALL USI
 -- Políticas para news
 CREATE POLICY "Enable read access for published news" ON news FOR SELECT USING (published = true);
 CREATE POLICY "Enable all for authenticated users" ON news FOR ALL USING (true);
+
+-- Políticas para blogs
+CREATE POLICY "Enable read access for published blogs" ON blogs FOR SELECT USING (published = true);
+CREATE POLICY "Enable all for authenticated users on blogs" ON blogs FOR ALL USING (true);
+
+-- Políticas para android_apps
+CREATE POLICY "Enable read access for published android apps" ON android_apps FOR SELECT USING (published = true);
+CREATE POLICY "Enable all for authenticated users on android apps" ON android_apps FOR ALL USING (true);
+
+-- Políticas para vscode_extensions
+CREATE POLICY "Enable read access for published vscode extensions" ON vscode_extensions FOR SELECT USING (published = true);
+CREATE POLICY "Enable all for authenticated users on vscode extensions" ON vscode_extensions FOR ALL USING (true);
 
 -- Políticas de Storage para avatars
 CREATE POLICY "Avatar images are publicly accessible" ON storage.objects FOR SELECT USING (bucket_id = 'avatars');
@@ -698,6 +768,91 @@ O sistema já está sendo utilizado por 8 municípios piloto.',
   ARRAY['gestão de projetos', 'obras públicas', 'transparência', 'acompanhamento', 'sistema']
 );
 
+-- Inserir apps android
+INSERT INTO android_apps (name, description, category, icon, color_gradient, features, tags, download_url, version, rating, downloads) VALUES
+(
+  'NAF - Gestão Contábil',
+  'Sistema completo de gestão contábil e fiscal para pequenas e médias empresas. Controle financeiro, emissão de notas fiscais, relatórios gerenciais e conformidade com a legislação brasileira.',
+  'Produtividade',
+  '💼',
+  'from-blue-600 to-indigo-700',
+  ARRAY[
+    'Controle de receitas e despesas',
+    'Emissão de notas fiscais eletrônicas',
+    'Relatórios gerenciais automatizados',
+    'Integração com bancos',
+    'Backup automático em nuvem',
+    'Conformidade com legislação fiscal'
+  ],
+  ARRAY['contabilidade', 'gestão', 'fiscal', 'empresas', 'finanças'],
+  'https://naf.ltdestacio.com.br/apk/naf.apk',
+  '2.5.1',
+  4.7,
+  15000
+),
+(
+  'Social Dev - Rede de Desenvolvedores',
+  'Comunidade exclusiva para desenvolvedores compartilharem conhecimento, projetos e oportunidades. Network profissional, feed de conteúdo técnico, eventos e desafios de código.',
+  'Social',
+  '👥',
+  'from-purple-600 to-pink-600',
+  ARRAY[
+    'Feed personalizado de conteúdo técnico',
+    'Perfil profissional para desenvolvedores',
+    'Sistema de mensagens privadas',
+    'Eventos e meetups de tecnologia',
+    'Desafios de código e hackathons',
+    'Portfólio integrado de projetos'
+  ],
+  ARRAY['desenvolvedores', 'networking', 'comunidade', 'tecnologia', 'programação'],
+  'https://socialdev.ltdestacio.com.br/apk/socialdev.apk',
+  '1.8.3',
+  4.9,
+  28000
+),
+(
+  'Currículo Bot - Assistente de Currículos',
+  'Assistente inteligente com IA para criação de currículos profissionais. Interface conversacional, templates modernos, análise de palavras-chave e exportação em múltiplos formatos.',
+  'Ferramentas',
+  '📄',
+  'from-green-600 to-teal-600',
+  ARRAY[
+    'Assistente IA conversacional',
+    'Templates profissionais modernos',
+    'Análise de palavras-chave para ATS',
+    'Exportação em PDF e DOCX',
+    'Dicas personalizadas por área',
+    'Armazenamento em nuvem'
+  ],
+  ARRAY['currículo', 'emprego', 'carreira', 'IA', 'profissional'],
+  'https://curriculobot.ltdestacio.com.br/apk/curriculobot.apk',
+  '3.1.0',
+  4.8,
+  42000
+);
+
+-- Inserir extensões VS Code
+INSERT INTO vscode_extensions (name, description, category, features, tags, marketplace_url, version, rating, installs, author) VALUES
+(
+  'Algorithm Complexity Analyzer Pro',
+  'Extensão avançada para análise automática de complexidade de algoritmos. Identifica Big O notation, sugere otimizações e fornece insights sobre performance do código em tempo real.',
+  'Análise de Código',
+  ARRAY[
+    'Análise automática de Big O',
+    'Sugestões de otimização em tempo real',
+    'Visualização gráfica de complexidade',
+    'Suporte para múltiplas linguagens',
+    'Comparação de implementações alternativas',
+    'Relatórios detalhados de performance'
+  ],
+  ARRAY['algoritmos', 'complexidade', 'performance', 'otimização', 'Big O'],
+  'https://marketplace.visualstudio.com/items?itemName=EstevamSouza.algorithm-complexity-analyzer-pro',
+  '1.4.2',
+  4.9,
+  125000,
+  'Estevam Souza'
+);
+
 -- ============================================
 -- MENSAGEM DE SUCESSO
 -- ============================================
@@ -709,17 +864,26 @@ DECLARE
     app_count INTEGER;
     doc_count INTEGER;
     news_count INTEGER;
+    blog_count INTEGER;
+    android_count INTEGER;
+    vscode_count INTEGER;
 BEGIN
     SELECT COUNT(*) INTO member_count FROM team_members;
     SELECT COUNT(*) INTO app_count FROM applications;
     SELECT COUNT(*) INTO doc_count FROM documents;
     SELECT COUNT(*) INTO news_count FROM news;
+    SELECT COUNT(*) INTO blog_count FROM blogs;
+    SELECT COUNT(*) INTO android_count FROM android_apps;
+    SELECT COUNT(*) INTO vscode_count FROM vscode_extensions;
     
     RAISE NOTICE 'BASE DE DADOS CONFIGURADA COM SUCESSO!';
     RAISE NOTICE 'Membros da equipe: %', member_count;
     RAISE NOTICE 'Aplicativos: %', app_count;
     RAISE NOTICE 'Documentos: %', doc_count;
     RAISE NOTICE 'Notícias: %', news_count;
+    RAISE NOTICE 'Posts de Blog: %', blog_count;
+    RAISE NOTICE 'Apps Android: %', android_count;
+    RAISE NOTICE 'Extensões VS Code: %', vscode_count;
     RAISE NOTICE 'Storage bucket "avatars" configurado';
     RAISE NOTICE 'Políticas RLS ativadas';
     RAISE NOTICE 'Usuários admin criados: admin/admin123 e editor/editor123';

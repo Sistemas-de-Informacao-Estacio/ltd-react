@@ -296,58 +296,274 @@ function Home() {
         </div>
       </section>
 
-      {/* App Destaque */}
-      <section className="py-20 px-4 bg-gray-900">
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-gradient-to-r from-blue-900/50 via-purple-900/50 to-pink-900/50 p-8 md:p-12 rounded-3xl border border-white/10 backdrop-blur-md">
-            <div className="text-center mb-8">
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                🚀 App Destaque: Gerador de Currículo IA
-              </h2>
-              <p className="text-blue-100 mb-6 text-lg leading-relaxed">
-                Nosso assistente inteligente com interface futurística que utiliza IA para criar currículos profissionais 
-                através de uma experiência interativa de chatbot. Desenvolvido com as mais avançadas tecnologias.
-              </p>
-            </div>
+      {/* Apps Android Destaque */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+              📱 Nossos Apps Android
+            </h2>
+            <p className="text-gray-300 text-lg max-w-3xl mx-auto">
+              Aplicativos móveis desenvolvidos para facilitar seu dia a dia com tecnologia de ponta
+            </p>
+          </div>
 
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
-                  <span className="text-white font-semibold">Interface de Chatbot IA</span>
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* NAF Digital */}
+            <div className="group bg-gradient-to-br from-blue-900/30 via-blue-800/20 to-gray-900/50 p-8 rounded-2xl border border-blue-500/20 hover:border-blue-500/50 transition-all duration-300 hover:transform hover:scale-105 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+                  📊
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
-                  <span className="text-white font-semibold">Design Responsivo & Futurista</span>
+                <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">NAF</span>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-white mb-3">NAF Digital</h3>
+              <p className="text-gray-300 mb-6 leading-relaxed text-sm">
+                Sistema completo de gestão para Núcleo de Apoio Contábil e Fiscal. Moderniza e otimiza atendimentos, 
+                facilitando o trabalho de estudantes e coordenadores.
+              </p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  Gestão de atendimentos
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-purple-400 rounded-full animate-pulse"></div>
-                  <span className="text-white font-semibold">Exportação PDF Premium</span>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  Multiplataforma
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 bg-pink-400 rounded-full animate-pulse"></div>
-                  <span className="text-white font-semibold">Salvamento Automático</span>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                  Interface moderna
                 </div>
               </div>
 
-              <div className="text-center">
-                <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-6 border border-white/20">
-                  <div className="text-3xl font-bold text-white mb-2">Versão 2.0.0</div>
-                  <div className="text-lg text-blue-300 mb-2">48.78 MB</div>
-                  <div className="text-sm text-gray-300">Para Windows</div>
+              <a
+                href="https://naf.ltdestacio.com.br/apk/naf.apk"
+                download
+                className="group/btn w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg"
+              >
+                <FaAndroid className="text-xl group-hover/btn:animate-pulse" />
+                <span className="font-semibold">Baixar APK</span>
+                <FaDownload className="text-sm group-hover/btn:animate-bounce" />
+              </a>
+            </div>
+
+            {/* Social Dev */}
+            <div className="group bg-gradient-to-br from-purple-900/30 via-purple-800/20 to-gray-900/50 p-8 rounded-2xl border border-purple-500/20 hover:border-purple-500/50 transition-all duration-300 hover:transform hover:scale-105 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+                  👥
+                </div>
+                <span className="px-3 py-1 bg-purple-500/20 text-purple-300 rounded-full text-xs font-semibold">Social</span>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-white mb-3">Social Dev</h3>
+              <p className="text-gray-300 mb-6 leading-relaxed text-sm">
+                Plataforma que conecta desenvolvedores e entusiastas de tecnologia. Promove colaboração e 
+                compartilhamento de conhecimento com fóruns, tutoriais e eventos.
+              </p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                  Fóruns de discussão
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                  Tutoriais interativos
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                  Eventos e networking
+                </div>
+              </div>
+
+              <a
+                href="https://socialdev.ltdestacio.com.br/apk/socialdev.apk"
+                download
+                className="group/btn w-full bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg"
+              >
+                <FaAndroid className="text-xl group-hover/btn:animate-pulse" />
+                <span className="font-semibold">Baixar APK</span>
+                <FaDownload className="text-sm group-hover/btn:animate-bounce" />
+              </a>
+            </div>
+
+            {/* Currículo Bot */}
+            <div className="group bg-gradient-to-br from-green-900/30 via-green-800/20 to-gray-900/50 p-8 rounded-2xl border border-green-500/20 hover:border-green-500/50 transition-all duration-300 hover:transform hover:scale-105 backdrop-blur-sm">
+              <div className="flex items-center justify-between mb-6">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-700 rounded-2xl flex items-center justify-center text-3xl shadow-lg">
+                  🤖
+                </div>
+                <span className="px-3 py-1 bg-green-500/20 text-green-300 rounded-full text-xs font-semibold">IA</span>
+              </div>
+              
+              <h3 className="text-2xl font-bold text-white mb-3">Currículo Bot</h3>
+              <p className="text-gray-300 mb-6 leading-relaxed text-sm">
+                Aplicativo inovador que utiliza inteligência artificial para criar currículos profissionais. 
+                Modelos personalizáveis e sugestões automáticas tornam tudo simples e rápido.
+              </p>
+
+              <div className="space-y-3 mb-6">
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  Inteligência Artificial
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  Modelos profissionais
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                  Rápido e eficiente
+                </div>
+              </div>
+
+              <a
+                href="https://curriculobot.ltdestacio.com.br/apk/curriculobot.apk"
+                download
+                className="group/btn w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white px-6 py-3 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg"
+              >
+                <FaAndroid className="text-xl group-hover/btn:animate-pulse" />
+                <span className="font-semibold">Baixar APK</span>
+                <FaDownload className="text-sm group-hover/btn:animate-bounce" />
+              </a>
+            </div>
+          </div>
+
+          <div className="text-center mt-12">
+            <Link
+              to="/produtos/apps-android"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg font-semibold"
+            >
+              Ver Todos os Apps Android
+              <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Extensão VS Code Destaque */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-900 via-blue-900/10 to-gray-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-gradient-to-r from-blue-900/40 via-purple-900/30 to-blue-900/40 p-10 md:p-16 rounded-3xl border border-blue-500/30 backdrop-blur-md shadow-2xl">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-700 rounded-2xl flex items-center justify-center shadow-lg">
+                    <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/>
+                    </svg>
+                  </div>
+                  <div>
+                    <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold">VS Code Extension</span>
+                  </div>
+                </div>
+
+                <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
+                  Algorithm Complexity Analyzer Pro
+                </h2>
+                <p className="text-blue-100 mb-6 text-lg leading-relaxed">
+                  Extensão profissional para análise de complexidade de algoritmos diretamente no VS Code. 
+                  Identifica Big O, otimiza código e fornece sugestões inteligentes em tempo real.
+                </p>
+
+                <div className="space-y-4 mb-8">
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-green-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 bg-green-400 rounded-full"></div>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold mb-1">Análise de Complexidade Automática</h4>
+                      <p className="text-gray-400 text-sm">Identifica Big O notation em tempo real</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-blue-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold mb-1">Sugestões de Otimização</h4>
+                      <p className="text-gray-400 text-sm">Recomendações para melhorar performance</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-6 h-6 bg-purple-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
+                    </div>
+                    <div>
+                      <h4 className="text-white font-semibold mb-1">Suporte Multi-linguagem</h4>
+                      <p className="text-gray-400 text-sm">JavaScript, Python, Java, C++ e mais</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <a
+                    href="https://marketplace.visualstudio.com/items?itemName=EstevamSouza.algorithm-complexity-analyzer-pro"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg font-semibold"
+                  >
+                    <svg className="w-6 h-6 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M23.15 2.587L18.21.21a1.494 1.494 0 0 0-1.705.29l-9.46 8.63-4.12-3.128a.999.999 0 0 0-1.276.057L.327 7.261A1 1 0 0 0 .326 8.74L3.899 12 .326 15.26a1 1 0 0 0 .001 1.479L1.65 17.94a.999.999 0 0 0 1.276.057l4.12-3.128 9.46 8.63a1.492 1.492 0 0 0 1.704.29l4.942-2.377A1.5 1.5 0 0 0 24 20.06V3.939a1.5 1.5 0 0 0-.85-1.352zm-5.146 14.861L10.826 12l7.178-5.448v10.896z"/>
+                    </svg>
+                    Instalar no VS Code
+                  </a>
+                  <Link
+                    to="/produtos/vscode-extensions"
+                    className="flex-1 bg-gray-800 hover:bg-gray-700 border border-gray-600 hover:border-gray-500 text-white px-8 py-4 rounded-xl flex items-center justify-center gap-2 transition-all duration-300 font-semibold"
+                  >
+                    Ver Detalhes
+                    <FaArrowRight />
+                  </Link>
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="bg-gray-900/50 rounded-2xl p-6 border border-blue-500/20 backdrop-blur-sm">
+                  <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-700">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                      <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                    </div>
+                    <span className="text-gray-400 text-sm font-mono">algorithm-analyzer.js</span>
+                  </div>
+                  <div className="space-y-2 font-mono text-sm">
+                    <div className="text-purple-400">// Complexidade: O(n²)</div>
+                    <div className="text-gray-400">function bubbleSort(arr) {'{'}</div>
+                    <div className="text-gray-400 ml-4">for (let i = 0; i {'<'} arr.length; i++) {'{'}</div>
+                    <div className="text-gray-400 ml-8">for (let j = 0; j {'<'} arr.length - 1; j++) {'{'}</div>
+                    <div className="bg-yellow-500/10 text-yellow-400 ml-12 p-2 rounded border-l-4 border-yellow-500">
+                      ⚠️ Algoritmo quadrático detectado
+                    </div>
+                    <div className="text-gray-400 ml-8">{'}'}</div>
+                    <div className="text-gray-400 ml-4">{'}'}</div>
+                    <div className="text-gray-400">{'}'}</div>
+                    <div className="mt-4 bg-green-500/10 text-green-400 p-3 rounded border-l-4 border-green-500">
+                      💡 Sugestão: Use Array.sort() O(n log n)
+                    </div>
+                  </div>
                 </div>
                 
-                <button 
-                  onClick={handleDownloadApp}
-                  className="group bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-8 py-4 rounded-2xl flex items-center gap-3 transition-all duration-300 transform hover:scale-105 shadow-2xl mx-auto"
-                >
-                  <FaAndroid className="text-2xl group-hover:animate-pulse" />
-                  <div className="text-left">
-                    <div className="font-bold text-lg">Baixar App</div>
-                    <div className="text-sm opacity-90">Download Gratuito</div>
+                {/* Badges */}
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <div className="px-4 py-2 bg-blue-500/20 rounded-lg border border-blue-500/30">
+                    <div className="text-2xl font-bold text-blue-400">4.9★</div>
+                    <div className="text-xs text-gray-400">Avaliação</div>
                   </div>
-                  <FaDownload className="text-xl group-hover:animate-bounce" />
-                </button>
+                  <div className="px-4 py-2 bg-green-500/20 rounded-lg border border-green-500/30">
+                    <div className="text-2xl font-bold text-green-400">10K+</div>
+                    <div className="text-xs text-gray-400">Downloads</div>
+                  </div>
+                  <div className="px-4 py-2 bg-purple-500/20 rounded-lg border border-purple-500/30">
+                    <div className="text-2xl font-bold text-purple-400">Free</div>
+                    <div className="text-xs text-gray-400">Gratuito</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

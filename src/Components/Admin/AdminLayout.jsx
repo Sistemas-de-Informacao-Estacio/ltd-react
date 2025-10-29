@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import { isAdminLoggedIn, adminLogout, getAdminUser } from '../../lib/auth';
-import { FaHome, FaUsers, FaFileAlt, FaMobileAlt, FaNewspaper, FaSignOutAlt, FaUser, FaArrowLeft, FaChartBar } from 'react-icons/fa';
+import { FaHome, FaUsers, FaFileAlt, FaMobileAlt, FaNewspaper, FaSignOutAlt, FaUser, FaArrowLeft, FaChartBar, FaBlog, FaAndroid, FaCode } from 'react-icons/fa';
 
 function AdminLayout() {
     const location = useLocation();
@@ -51,9 +51,24 @@ function AdminLayout() {
             label: 'Aplicativos'
         },
         {
+            path: '/admin/android-apps',
+            icon: FaAndroid,
+            label: 'Apps Android'
+        },
+        {
+            path: '/admin/vscode-extensions',
+            icon: FaCode,
+            label: 'Extensões VS Code'
+        },
+        {
             path: '/admin/news',
             icon: FaNewspaper,
             label: 'Notícias'
+        },
+        {
+            path: '/admin/blog',
+            icon: FaBlog,
+            label: 'Blog'
         }
     ];
 
