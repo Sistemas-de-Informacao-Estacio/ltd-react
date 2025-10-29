@@ -17,17 +17,18 @@ const AppsAndroid = () => {
       setLoading(true);
       setError(null);
       console.log('🔍 Buscando apps Android no Supabase...');
+      console.log('📍 Tabela: produtos_android_apps');
       
-      const { data, error: supabaseError } = await supabase
-        .from('ltd_android_apps')
-        .select('*')
+      const { data, error: supabaseError, count } = await supabase
+        .from('produtos_android_apps')
+        .select('*', { count: 'exact' })
         .eq('published', true)
         .order('created_at', { ascending: false });
 
       console.log('📦 Resposta do Supabase:', { 
         data, 
         error: supabaseError,
-        count: data?.length || 0 
+        count: count || data?.length || 0 
       });
 
       if (supabaseError) {
@@ -36,7 +37,7 @@ const AppsAndroid = () => {
       }
 
       if (!data || data.length === 0) {
-        console.warn('⚠️ Nenhum app encontrado na tabela ltd_android_apps');
+        console.warn('⚠️ Nenhum app encontrado na tabela produtos_android_apps');
         setApps([]);
       } else {
         console.log('✅ Apps carregados com sucesso:', data.length);

@@ -38,7 +38,7 @@ export default function AndroidAppsManagement() {
   const fetchApps = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('ltd_android_apps')
+        .from('produtos_android_apps')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -75,7 +75,7 @@ export default function AndroidAppsManagement() {
     try {
       if (editing) {
         const { error } = await supabase
-          .from('ltd_android_apps')
+          .from('produtos_android_apps')
           .update(appData)
           .eq('id', editing);
         
@@ -83,7 +83,7 @@ export default function AndroidAppsManagement() {
         showMessage('success', 'App atualizado com sucesso!');
       } else {
         const { error } = await supabase
-          .from('ltd_android_apps')
+          .from('produtos_android_apps')
           .insert([appData]);
         
         if (error) throw error;
@@ -122,7 +122,7 @@ export default function AndroidAppsManagement() {
 
     try {
       const { error } = await supabase
-        .from('ltd_android_apps')
+        .from('produtos_android_apps')
         .delete()
         .eq('id', id);
 

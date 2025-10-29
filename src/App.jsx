@@ -24,6 +24,7 @@ import Contact from './Components/Contact';
 import Blog from './Components/Blog';
 import AppsAndroid from './Components/AppsAndroid';
 import VscodeExtensions from './Components/VscodeExtensions';
+import Documentacoes from './Components/Documentacoes';
 
 // ============================================
 // ADMIN PAGES
@@ -38,6 +39,7 @@ import NewsManagement from './Components/Admin/NewsManagement';
 import BlogManagement from './Components/Admin/BlogManagement';
 import AndroidAppsManagement from './Components/Admin/AndroidAppsManagement';
 import VscodeExtensionsManagement from './Components/Admin/VscodeExtensionsManagement';
+import DocumentacoesManagement from './Components/Admin/DocumentacoesManagement';
 
 // ============================================
 // ROUTE CONFIGURATION
@@ -67,6 +69,7 @@ const produtosRoutes = [
 const outrosRoutes = [
   { path: '/outros/noticias', element: <News />, label: 'Notícias' },
   { path: '/outros/blog', element: <Blog />, label: 'Blog' },
+  { path: '/outros/documentacoes', element: <Documentacoes />, label: 'Documentações' },
 ];
 
 // Todas as rotas públicas combinadas
@@ -87,6 +90,7 @@ const adminRoutes = [
   { path: 'vscode-extensions', element: <VscodeExtensionsManagement />, label: 'Extensões VS Code' },
   { path: 'news', element: <NewsManagement />, label: 'Notícias' },
   { path: 'blog', element: <BlogManagement />, label: 'Blog' },
+  { path: 'documentacoes', element: <DocumentacoesManagement />, label: 'Documentações' },
 ];
 
 // ============================================

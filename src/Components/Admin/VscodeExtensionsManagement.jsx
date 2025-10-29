@@ -39,7 +39,7 @@ export default function VscodeExtensionsManagement() {
   const fetchExtensions = useCallback(async () => {
     try {
       const { data, error } = await supabase
-        .from('ltd_vscode_extensions')
+        .from('produtos_vscode_extensions')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -76,7 +76,7 @@ export default function VscodeExtensionsManagement() {
     try {
       if (editing) {
         const { error } = await supabase
-          .from('ltd_vscode_extensions')
+          .from('produtos_vscode_extensions')
           .update(extensionData)
           .eq('id', editing);
         
@@ -84,7 +84,7 @@ export default function VscodeExtensionsManagement() {
         showMessage('success', 'Extensão atualizada com sucesso!');
       } else {
         const { error } = await supabase
-          .from('ltd_vscode_extensions')
+          .from('produtos_vscode_extensions')
           .insert([extensionData]);
         
         if (error) throw error;
@@ -122,7 +122,7 @@ export default function VscodeExtensionsManagement() {
 
     try {
       const { error } = await supabase
-        .from('ltd_vscode_extensions')
+        .from('produtos_vscode_extensions')
         .delete()
         .eq('id', id);
 

@@ -17,17 +17,18 @@ const VscodeExtensions = () => {
       setLoading(true);
       setError(null);
       console.log('🔍 Buscando extensões VS Code no Supabase...');
+      console.log('📍 Tabela: produtos_vscode_extensions');
       
-      const { data, error: supabaseError } = await supabase
-        .from('ltd_vscode_extensions')
-        .select('*')
+      const { data, error: supabaseError, count } = await supabase
+        .from('produtos_vscode_extensions')
+        .select('*', { count: 'exact' })
         .eq('published', true)
         .order('created_at', { ascending: false });
 
       console.log('📦 Resposta do Supabase:', { 
         data, 
         error: supabaseError,
-        count: data?.length || 0 
+        count: count || data?.length || 0 
       });
 
       if (supabaseError) {
@@ -36,7 +37,7 @@ const VscodeExtensions = () => {
       }
 
       if (!data || data.length === 0) {
-        console.warn('⚠️ Nenhuma extensão encontrada na tabela ltd_vscode_extensions');
+        console.warn('⚠️ Nenhuma extensão encontrada na tabela produtos_vscode_extensions');
         setExtensions([]);
       } else {
         console.log('✅ Extensões carregadas com sucesso:', data.length);

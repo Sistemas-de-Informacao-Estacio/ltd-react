@@ -16,7 +16,7 @@ const Blog = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('blogs')
+        .from('blog_posts')
         .select('*')
         .eq('published', true)
         .order('created_at', { ascending: false });

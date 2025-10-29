@@ -22,7 +22,7 @@ const BlogManagement = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('blogs')
+        .from('blog_posts')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -72,13 +72,13 @@ const BlogManagement = () => {
       if (editingPost) {
         // Atualizar post existente
         const result = await supabase
-          .from('blogs')
+          .from('blog_posts')
           .update(postData)
           .eq('id', editingPost.id);
         error = result.error;
       } else {
         // Criar novo post
-        const result = await supabase.from('blogs').insert([postData]);
+        const result = await supabase.from('blog_posts').insert([postData]);
         error = result.error;
       }
 
@@ -112,7 +112,7 @@ const BlogManagement = () => {
     if (!window.confirm('Tem certeza que deseja excluir este post?')) return;
 
     try {
-      const { error } = await supabase.from('blogs').delete().eq('id', id);
+      const { error } = await supabase.from('blog_posts').delete().eq('id', id);
 
       if (error) throw error;
 
