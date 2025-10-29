@@ -326,7 +326,7 @@ function Home() {
               </div>
             </Link>
 
-            <Link to="/cybersec" className="group">
+            <Link to="/produtos/ciberseguranca" className="group">
               <div className="bg-gradient-to-br from-red-900/50 to-red-800/50 p-8 rounded-2xl text-center hover:from-red-800/60 hover:to-red-700/60 transition-all duration-300 border border-red-500/20 hover:border-red-400/40 transform hover:scale-105">
                 <FaShieldAlt className="text-5xl text-red-400 mx-auto mb-6 group-hover:animate-bounce" />
                 <h3 className="text-xl font-bold text-red-300 mb-3">Segurança Digital</h3>
@@ -366,7 +366,7 @@ function Home() {
               </div>
             </Link>
 
-            <Link to="/cybersec" className="group">
+            <Link to="/produtos/ciberseguranca" className="group">
               <div className="bg-gradient-to-br from-red-900/30 to-red-800/30 p-8 rounded-2xl border border-red-500/20 hover:border-red-400/40 transition-all duration-300 transform hover:scale-105">
                 <div className="flex items-center gap-4 mb-4">
                   <FaShieldAlt className="text-3xl text-red-400" />

@@ -62,7 +62,7 @@ const produtosRoutes = [
   { path: '/produtos/apps', element: <Apps />, label: 'Aplicativos' },
   { path: '/produtos/tecnologias', element: <Technologies />, label: 'Tecnologias' },
   { path: '/produtos/docs', element: <Documents />, label: 'Documentos' },
-  { path: '/produtos/admin', element: <CyberSec />, label: 'Admin' },
+  { path: '/produtos/ciberseguranca', element: <CyberSec />, label: 'Cibersegurança' },
   { path: '/produtos/apps-android', element: <AppsAndroid />, label: 'Apps Android' },
   { path: '/produtos/vscode-extensions', element: <VscodeExtensions />, label: 'Extensões VS Code' },
 ];

@@ -30,7 +30,7 @@ function Nav() {
                 { name: 'Apps', path: '/produtos/apps' },
                 { name: 'Tecnologias', path: '/produtos/tecnologias' },
                 { name: 'Docs', path: '/produtos/docs' },
-                { name: 'Admin', path: '/produtos/admin' },
+                { name: 'Cibersegurança', path: '/produtos/ciberseguranca' },
                 { name: 'Apps Android', path: '/produtos/apps-android' },
                 { name: 'Extensões VS Code', path: '/produtos/vscode-extensions' }
             ]
